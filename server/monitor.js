@@ -77,9 +77,21 @@ async function runHealthCheck() {
     const status = await checkHealth();
     if (status && status.baseEndpoint) {
         healthMetrics.successCount++;
+        // Silent success - no logging
     } else {
         healthMetrics.failureCount++;
         healthMetrics.lastFailure = new Date().toISOString();
+        logger.error('Health check failed', {
+            metrics: healthMetrics,
+            timestamp: new Date().toISOString()
+        });
+        
+        // Log to console only on failures
+        console.error('❌ Health check failed:', {
+            failureCount: healthMetrics.failureCount,
+            lastFailure: healthMetrics.lastFailure,
+            status
+        });
     }
     healthMetrics.uptime = process.uptime();
     adjustInterval(status);
@@ -88,8 +100,10 @@ async function runHealthCheck() {
 // Start with base interval
 checkTimer = setInterval(runHealthCheck, config.currentInterval);
 
-// Initial check
-runHealthCheck();
+// Initial check - silent
+runHealthCheck().catch(error => {
+    console.error('Initial health check failed:', error);
+});
 
 // Export metrics for external monitoring
 module.exports = {
