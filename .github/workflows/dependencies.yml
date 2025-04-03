@@ -1,0 +1,27 @@
+name: Update Dependencies
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday
+  workflow_dispatch:
+
+jobs:
+  update-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+      
+      - name: Update dependencies
+        run: |
+          cd server
+          npm update
+          npm audit fix
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: '📦 Update dependencies'
+          body: 'Automated dependency updates'
+          branch: 'deps/update'
