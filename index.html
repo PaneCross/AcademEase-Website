@@ -2,26 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
     <title>AcademEase - Moving Minds Forward</title>
     <link href="css/styles.css" rel="stylesheet"/>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
 </head>
 <body>
     <!-- Header with sticky navigation -->
     <header id="header">
         <div class="nav-container">
             <div class="logo">
-                <img src="/api/placeholder/100/50" alt="AcademEase Logo">
-                <div class="logo-text">AcademEase</div>
+                <img src="images/logo.png" alt="AcademEase Logo">
+                <div class="logo-text-container">
+                    <div class="logo-text">AcademEase</div>
+                    <div class="logo-tagline">Moving Minds Forward</div>
+                </div>
             </div>
             <button class="mobile-menu-btn">☰</button>
+        </div>
+        <div class="nav-bar">
             <nav>
                 <ul>
                     <li><a href="#hero">Home</a></li>
                     <li><a href="#services">Services</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#technology">Technology</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="#testimonials">Who We Help</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
@@ -39,6 +48,7 @@
 
     <!-- Services Section -->
     <section class="services" id="services">
+        <div class="services-background"></div>
         <div class="container">
             <div class="section-title">
                 <h2>Our Services</h2>
@@ -77,13 +87,13 @@
             </div>
             <div class="about-flex">
                 <div class="about-image">
-                    <img src="/api/placeholder/600/400" alt="About TransportEase">
+                    <img src="images/area.png" alt="About AcademEase">
                 </div>
                 <div class="about-content">
                     <h3>Your Trusted Transportation Partner</h3>
                     <p>Our mission is to ensure that every student, whether they have an Individualized Education Program (IEP), are in foster care, or face housing instability, has access to the transportation they need to succeed academically. We understand the importance of continuity in education, and our goal is to help remove barriers by offering one-on-one rides that prioritize safety, comfort, and individualized care.</p>
                 </br>
-                    <p>We proudly serve students across Southern California, including school districts in San Diego, Los Angeles, and Riverside counties. With a focus on quality service and seamless coordination, we partner with schools, districts, and families to ensure every student gets to school with peace of mind.</p>
+                    <p>We proudly serve students across Southern California, including school districts in San Diego, Los Angeles, Orange, and Riverside counties. With a focus on quality service and seamless coordination, we partner with schools, districts, and families to ensure every student gets to school with peace of mind.</p>
                 </div>
             </div>
         </div>
@@ -99,7 +109,7 @@
                 <!-- Left side showcase -->
                 <div class="tech-showcase" id="techShowcase">
                     <div class="showcase-item active" data-tech="scheduling">
-                        <img src="/api/placeholder/800/600" alt="Intelligent Scheduling">
+                        <img src="images/schedule.JPG" alt="Intelligent Scheduling">
                         <div class="showcase-content">
                             <h3>Intelligent Scheduling & Dispatch</h3>
                             <p>Our system optimizes scheduling and dispatch operations to ensure no student is left behind. With dynamic route adjustments and live monitoring, we prevent missed pickups and maximize efficiency.</p>
@@ -112,7 +122,7 @@
                         </div>
                     </div>
                     <div class="showcase-item" data-tech="notifications">
-                        <img src="/api/placeholder/800/600" alt="Family Notifications">
+                        <img src="images/mobile.png" alt="Family Notifications">
                         <div class="showcase-content">
                             <h3>Real-Time Family Notifications</h3>
                             <p>Parents and guardians receive instant text updates when a driver is en route, arrives for pickup, and completes drop-off. This ensures full visibility into the transportation process and enhances peace of mind.</p>
@@ -125,7 +135,7 @@
                         </div>
                     </div>
                     <div class="showcase-item" data-tech="updates">
-                        <img src="/api/placeholder/800/600" alt="Morning Updates">
+                        <img src="images/desk.png" alt="Morning Updates">
                         <div class="showcase-content">
                             <h3>Proactive Morning Updates</h3>
                             <p>Each morning, schools receive a comprehensive report detailing any route cancellations or last-minute changes, allowing administrators to stay ahead of potential disruptions and adjust accordingly.</p>
@@ -138,7 +148,7 @@
                         </div>
                     </div>
                     <div class="showcase-item" data-tech="compliance">
-                        <img src="/api/placeholder/800/600" alt="Compliance Reporting">
+                        <img src="images/desktop.png" alt="Compliance Reporting">
                         <div class="showcase-content">
                             <h3>Compliance & Comprehensive Reporting</h3>
                             <p>AcademEase provides full credential tracking for drivers and vehicles, ensuring compliance with all district and regulatory requirements. Additionally, schools can access full encounter reports, including trip records, timestamps, and compliance data as needed.</p>
@@ -211,54 +221,90 @@
         </div>
     </section>
 
-    <!-- Testimonials Section -->
-    <section class="testimonials" id="testimonials">
+    <!-- Who We Help Section (formerly Testimonials) -->
+    <section class="who-we-help" id="testimonials">
+        <!-- Background images container -->
+        <div class="who-we-help-bg">
+            <!-- Background images will be added dynamically via JavaScript -->
+            <div class="who-we-help-bg-image" data-bg="parents-bg" style="background-image: url('images/guardians.jpeg')"></div>
+            <div class="who-we-help-bg-image" data-bg="schools-bg" style="background-image: url('images/classroom.jpeg')"></div>
+            <div class="who-we-help-bg-image" data-bg="social-workers-bg" style="background-image: url('images/socialworker.png')"></div>
+            <div class="who-we-help-bg-image" data-bg="district-bg" style="background-image: url('images/meeting.png')"></div>
+        </div>
+        
         <div class="container">
             <div class="section-title">
-                <h2>What Our Clients Say</h2>
+                <h2>Who We Help</h2>
             </div>
-            <div class="testimonials-container testimonial-group">
-                <div class="testimonials-slider">
-                    <div class="testimonial">
-                        <div class="testimonial-content">
-                            <p>"TransportEase has been our go-to transportation provider for all corporate events and client pickups. Their professionalism and punctuality are unmatched. We highly recommend their services to any business looking for reliable transportation."</p>
+            <div class="who-we-help-container testimonial-group">
+                <div class="who-we-help-slider">
+                    <div class="help-item">
+                        <div class="help-content">
+                            <h3>Parents & Guardians</h3>
+                            <p class="benefit-item">Real-time text notifications provide peace of mind during transportation</p>
+                            <p class="benefit-item">Consistent drivers build trust and understanding of unique student needs</p>
+                            <p class="benefit-item">Reliable scheduling reduces family morning stress and planning challenges</p>
+                            <p class="benefit-item">Direct communication channels with drivers for special instructions</p>
+                            <p class="benefit-item">Accommodations for medical equipment and mobility devices</p>
                         </div>
                         <div class="client">
                             <div class="client-image">
-                                <img src="/api/placeholder/70/70" alt="Client 1">
+                                <img src="images/parents.svg" alt="Parents & Guardians" class="help-icon">
                             </div>
-                            <h4>Sarah Johnson</h4>
-                            <p>CEO, TechCorp Inc.</p>
                         </div>
                     </div>
-                    <div class="testimonial">
-                        <div class="testimonial-content">
-                            <p>"We used TransportEase for our wedding transportation, and they exceeded our expectations. The vehicles were immaculate, the drivers were courteous, and everything ran on schedule. Thank you for making our special day stress-free!"</p>
+                    <div class="help-item">
+                        <div class="help-content">
+                            <h3>Schools & Educators</h3>
+                            <p class="benefit-item">Morning update reports help prepare for student arrivals and absences</p>
+                            <p class="benefit-item">Detailed compliance documentation simplifies regulatory requirements</p>
+                            <p class="benefit-item">Improved attendance rates for vulnerable student populations</p>
+                            <p class="benefit-item">Reduced administrative burden of transportation coordination</p>
+                            <p class="benefit-item">Better educational continuity for students with challenging circumstances</p>
                         </div>
                         <div class="client">
                             <div class="client-image">
-                                <img src="/api/placeholder/70/70" alt="Client 2">
+                                <img src="images/schools.svg" alt="Schools & Educators" class="help-icon">
                             </div>
-                            <h4>Michael & Emma</h4>
-                            <p>Wedding Clients</p>
                         </div>
                     </div>
-                    <div class="testimonial">
-                        <div class="testimonial-content">
-                            <p>"As a logistics manager, I've worked with many transportation providers, but TransportEase stands out for their reliability and efficient service. Their real-time tracking feature has been invaluable for our time-sensitive deliveries."</p>
+                    <div class="help-item">
+                        <div class="help-content">
+                            <h3>Social Workers & Case Managers</h3>
+                            <p class="benefit-item">Flexible dispatch system adapts quickly to changing housing situations</p>
+                            <p class="benefit-item">Detailed trip records provide documentation for case management</p>
+                            <p class="benefit-item">Reduced transportation barriers for students in transition</p>
+                            <p class="benefit-item">Reliable service allows focus on other critical student needs</p>
+                            <p class="benefit-item">Continuity of education during housing or family transitions</p>
                         </div>
                         <div class="client">
                             <div class="client-image">
-                                <img src="/api/placeholder/70/70" alt="Client 3">
+                                <img src="images/hands.svg" alt="Social Workers" class="help-icon">
                             </div>
-                            <h4>David Chen</h4>
-                            <p>Logistics Manager, Global Shipping</p>
+                        </div>
+                    </div>
+                    <div class="help-item">
+                        <div class="help-content">
+                            <h3>District Administrators</h3>
+                            <p class="benefit-item">Comprehensive compliance reporting for audit and regulatory requirements</p>
+                            <p class="benefit-item">Cost-effective solution for specialized transportation needs</p>
+                            <p class="benefit-item">Reduced liability through proper screening and credential verification</p>
+                            <p class="benefit-item">Simplified billing and administration compared to in-house solutions</p>
+                            <p class="benefit-item">Improved metrics for McKinney-Vento and foster youth program success</p>
+                        </div>
+                        <div class="client">
+                            <div class="client-image">
+                                <img src="images/reports.svg" alt="District Administrators" class="help-icon">
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="slider-controls">
-                    <button class="slider-btn prev-btn">←</button>
-                    <button class="slider-btn next-btn">→</button>
+                    <button class="slider-btn prev-btn" aria-label="Previous slide">←</button>
+                    <div class="slide-dots">
+                        <!-- Dots will be generated by JavaScript -->
+                    </div>
+                    <button class="slider-btn next-btn" aria-label="Next slide">→</button>
                 </div>
             </div>
         </div>
@@ -322,7 +368,7 @@
                     </div>
                 </div>
                 <div class="contact-form">
-                    <h3>Schools and Districts, let’s connect today!</h3>
+                    <h3>Schools and Districts, let's connect today!</h3>
                     <form id="contactForm" novalidate>
                         <div class="form-group">
                             <input type="text" 
@@ -347,7 +393,9 @@
                                    id="phone" 
                                    name="phone" 
                                    class="form-control" 
-                                   placeholder="Your Phone"
+                                   placeholder="Your Phone Number"
+                                   pattern="[0-9]{10}"
+                                   maxlength="14"
                                    autocomplete="tel">
                         </div>
                         <div class="form-group">
@@ -382,7 +430,7 @@
             <div class="footer-grid">
                 <div class="footer-col">
                     <h4>AcademEase</h4>
-                    <p>Moving minds forward</p>
+                    <p>Moving Minds Forward</p>
                 </div>
                 <div class="footer-col">
                     <h4>Quick Links</h4>
@@ -391,18 +439,17 @@
                         <li><a href="#services">Services</a></li>
                         <li><a href="#about">About Us</a></li>
                         <li><a href="#technology">Technology</a></li>
-                        <li><a href="#testimonials">Testimonials</a></li>
+                        <li><a href="#testimonials">Who We Help</a></li>
                         <li><a href="#contact">Contact Us</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
                     <h4>Services</h4>
                     <ul>
-                        <li><a href="#">Corporate Transportation</a></li>
-                        <li><a href="#">Event Transportation</a></li>
-                        <li><a href="#">Airport Transfers</a></li>
-                        <li><a href="#">Logistics & Delivery</a></li>
-                        <li><a href="#">Special Occasions</a></li>
+                        <li><a href="#services">Special Needs Transportation</a></li>
+                        <li><a href="#services">Foster Care Transportation</a></li>
+                        <li><a href="#services">McKinney-Vento Support</a></li>
+                        <li><a href="#contact">School District Partnerships</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
@@ -420,5 +467,7 @@
     </footer>
     <script defer src="js/script.js"></script>
     <script defer src="js/contact-form.js"></script>
+    <script defer src="js/phone-formatter.js"></script>
+    <script defer src="js/modal.js"></script>
 </body>
 </html>

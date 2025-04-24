@@ -2,27 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service - AcademEase</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
+    <title>AcademEase - Moving Minds Forward</title>
+    <link href="css/styles.css" rel="stylesheet"/>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
 </head>
 <body>
-    <!-- Header -->
+    <!-- Header with sticky navigation -->
     <header id="header">
         <div class="nav-container">
             <div class="logo">
-                <img src="/api/placeholder/100/50" alt="AcademEase Logo">
-                <div class="logo-text">AcademEase</div>
+                <img src="images/logo.png" alt="AcademEase Logo">
+                <div class="logo-text-container">
+                    <div class="logo-text">AcademEase</div>
+                    <div class="logo-tagline">Moving Minds Forward</div>
+                </div>
             </div>
             <button class="mobile-menu-btn">☰</button>
+        </div>
+        <div class="nav-bar">
             <nav>
                 <ul>
                     <li><a href="index.html#hero">Home</a></li>
-                        <li><a href="index.html#services">Services</a></li>
-                        <li><a href="index.html#about">About Us</a></li>
-                        <li><a href="index.html#technology">Technology</a></li>
-                        <li><a href="index.html#testimonials">Testimonials</a></li>
-                        <li><a href="index.html#contact">Contact Us</a></li>
+                    <li><a href="index.html#services">Services</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#technology">Technology</a></li>
+                    <li><a href="index.html#testimonials">Who We Help</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
                 </ul>
             </nav>
         </div>
@@ -101,37 +110,45 @@
         <div class="footer-container">
             <div class="footer-grid">
                 <div class="footer-col">
+                    <h4>AcademEase</h4>
+                    <p>Moving minds forward</p>
+                </div>
+                <div class="footer-col">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="index.html#hero">Home</a></li>
                         <li><a href="index.html#services">Services</a></li>
                         <li><a href="index.html#about">About Us</a></li>
                         <li><a href="index.html#technology">Technology</a></li>
-                        <li><a href="index.html#testimonials">Testimonials</a></li>
+                        <li><a href="index.html#testimonials">Who We Help</a></li>
                         <li><a href="index.html#contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="index.html#services">Special Needs Transportation</a></li>
+                        <li><a href="index.html#services">Foster Care Transportation</a></li>
+                        <li><a href="index.html#services">McKinney-Vento Support</a></li>
+                        <li><a href="index.html#contact">School District Partnerships</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
                     <h4>Legal</h4>
                     <ul>
-                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                        <li><a href="terms-of-service.html">Terms of Service</a></li>
+                        <li><a href="./privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="./terms-of-service.html">Terms of Service</a></li>
                     </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Connect With Us</h4>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 AcademEase LLC. All rights reserved.</p>
+                <p>&copy; 2025 AcademEase LLC. All Rights Reserved. | <a href="privacy-policy.html" style="color: #ccc;">Privacy Policy</a> | <a href="terms-of-service.html" style="color: #ccc;">Terms of Service</a></p>
             </div>
         </div>
     </footer>
-    <script src="js/script.js"></script>
+    <script defer src="js/script.js"></script>
+    <script defer src="js/contact-form.js"></script>
+    <script defer src="js/phone-formatter.js"></script>
+    <script defer src="js/modal.js"></script>
 </body>
 </html>

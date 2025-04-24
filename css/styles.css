@@ -1,1034 +1,2129 @@
 /* Reset and base styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight color on mobile */
+    -webkit-touch-callout: none; /* Disable callout on long press */
+    user-select: none; /* Prevent text selection on mobile taps */
+    outline-color: transparent; /* Remove outline on focus */
+}
 
-        html {
-            scroll-padding-top: 80px;
-            scroll-behavior: smooth;
-        }
+html {
+    /* Calculate the exact header height: 70px (logo) + 35px (nav bar) = 105px */
+    scroll-padding-top: 105px; 
+    /* Prevent layout shift when modal opens by always showing scrollbar */
+    overflow-y: scroll;
+}
 
-        body {
-            line-height: 1.6;
-            color: #333;
-        }
+body {
+    line-height: 1.6;
+    color: #333;
+    /* Keep body positioned normally by default */
+    width: 100%;
+    position: relative;
+}
 
-        /* Header styles */
-        header {
-            background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 1rem 0;
-        }
+/* Separate modal-open class for body instead of nesting with &. */
+body.modal-open {
+    overflow: hidden;
+    /* Use position: fixed with preserved scroll position */
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    /* This keeps the content from jumping when switching to fixed */
+    top: 0;
+    left: 0;
+}
 
-        #header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+/* Add focus styles for accessibility that don't use the default blue outline */
+a:focus, button:focus, input:focus, textarea:focus, select:focus, [tabindex]:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 98, 204, 0.5);
+}
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
+/* Remove blue outline/border on click for all interactive elements */
+button, a, input, select, textarea, [tabindex], .service-card, .tech-tile, .about-image img, .nav-bar li {
+    outline: none !important; /* Remove default outline */
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+    -webkit-appearance: none; /* Remove default styling */
+    -moz-appearance: none;
+    appearance: none;
+}
 
-        .logo {
-            display: flex;
-            align-items: center;
-        }
+/* Provide custom focus styles for keyboard navigation (accessibility) */
+button:focus-visible, 
+a:focus-visible, 
+input:focus-visible, 
+select:focus-visible, 
+textarea:focus-visible, 
+[tabindex]:focus-visible {
+    outline: 2px solid rgba(0, 98, 204, 0.5) !important;
+    outline-offset: 2px;
+    box-shadow: none;
+}
 
-        .logo img {
-            height: 50px;
-        }
+/* Override any existing focus styles that might conflict */
+a:focus, button:focus, input:focus, textarea:focus, select:focus, [tabindex]:focus {
+    outline: none;
+    box-shadow: none;
+}
 
-        .logo-text {
-            margin-left: 1rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #0062cc;
-        }
+/* Ensure nav menu items don't show outline */
+nav ul li a:focus {
+    outline: none;
+    box-shadow: none;
+}
 
+/* Make sure mobile menu button doesn't show outline */
+.mobile-menu-btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Desktop header with two-section layout */
+header {
+    /* Base gradient background */
+    background: linear-gradient(to right, #CCE5FF, #0066CC);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column; /* Stack logo and nav bar vertically */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Create a pseudo-element for the clouds with controlled opacity */
+header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/clouds.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.35; /* Set the clouds image to 35% opacity */
+    z-index: -1; /* Place it behind the header content */
+    pointer-events: none; /* Make sure it doesn't interfere with interactions */
+}
+
+/* Redundant, can be removed */
+#header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Header container layout for logo section */
+.nav-container {
+    max-width: 1500px;
+    height: 80px; /* Set a fixed height for the header */
+    padding-left: 2vw; /* Add some padding on the left */
+    display: flex;
+    justify-content: flex-start; /* Align logo to the left */
+    align-items: center;
+    width: 100%;
+}
+
+/* Add navigation bar at the bottom of the header */
+.nav-bar {
+    background-color: #201B4F; /* Same as the previous border color */
+    width: 100%;
+    height: 35px;
+    margin-top: auto; /* Push to bottom of header */
+    display: flex;
+    justify-content: flex-end; /* Changed from center to flex-end to push content right */
+    align-items: center;
+    padding-right: 2rem; /* Add some padding on the right */
+}
+
+/* Logo container with added support for tagline */
+.logo {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    flex-shrink: 0; /* Prevent logo from shrinking */
+}
+
+/* Logo text container to house both the name and tagline */
+.logo-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 0.8rem;
+    height: 100%;
+    justify-content: center; /* Center vertically */
+}
+
+/* Logo main text */
+.logo-text {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0062cc;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+}
+
+/* New tagline style */
+.logo-tagline {
+    font-size: 0.9rem; /* Smaller text size */
+    color: #201B4F; /* Dark blue color to match navigation bar */
+    text-align: right; /* Align to the right */
+    align-self: flex-end; /* Align to the right side of container */
+    font-weight: 500; /* Semi-bold weight */
+    margin-top: 0.2rem; /* Small space between logo text and tagline */
+    font-style: italic; /* Optional: adds a slight italic look */
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.6); /* Subtle text shadow */
+    white-space: nowrap; /* Prevent wrapping */
+    line-height: 1;
+}
+
+/* Mobile adjustments for the logo text and tagline */
+@media (max-width: 768px) {
+    .logo-text {
+        font-size: 1.8rem; /* Slightly smaller on mobile */
+    }
+    
+    .logo-tagline {
+        font-size: 0.8rem; /* Smaller on mobile */
+    }
+}
+
+/* Logo container adjustments - consistent across all devices */
+.logo img {
+    height: 75px; /* Keep consistent size for all viewports */
+    width: auto; /* Maintain aspect ratio */
+    object-fit: contain; /* Ensure the image fits properly */
+    margin: 0; /* Remove any margin that might add to the height */
+}
+
+/* Navigation menu positioning in the nav-bar */
+nav {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* Restore desktop navigation */
+@media (min-width: 769px) {
+    nav ul {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: 2rem; /* Increase spacing between items */
+        height: 100%;
+        justify-content: flex-end; /* Align items to the right */
+    }
+    
+    nav ul li {
+        margin: 0;
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+    
+    nav ul li a {
+        text-decoration: none;
+        color: white; /* Change text to white */
+        font-weight: 600;
+        text-shadow: none; /* Remove text shadow */
+        transition: color 0.3s;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+    }
+    
+    nav ul li a:hover {
+        color: #ff9500; /* Orange hover color */
+    }
+}
+
+/* Mobile menu button positioning */
+.mobile-menu-btn {
+    display: none; /* Hide on desktop */
+    margin-left: auto; /* Push to right when visible */
+}
+
+/* Mobile menu styles - properly contained in media query */
+@media (max-width: 768px) {
+    /* Restore original header style for mobile */
+    header {
+        background: linear-gradient(to right, #CCE5FF, #0066CC);
+        position: fixed !important;
+        padding: 1rem 0;
+        display: flex;
+        flex-direction: row;
+        border-bottom: 25px solid #201B4F;
+    }
+    
+    header::before {
+        opacity: 0.35;
+        background-attachment: scroll;
+        height: 100%; /* Restore full height background for mobile */
+    }
+    
+    /* Hide the nav-bar on mobile */
+    .nav-bar {
+        display: none;
+    }
+    
+    /* Keep original nav position for mobile */
+    nav {
+        margin-left: auto;
+    }
+    
+    .nav-container {
+        justify-content: space-between;
+    }
+    
+    .logo {
+        flex-grow: 1; /* Let logo take available space */
+    }
+    
+    .mobile-menu-btn {
+        display: block; /* Show on mobile */
+    }
+    
+    nav ul {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        height: 100vh; /* Full height */
+        width: 100%;
+        max-width: 300px;
+        background-color: white;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 60px 0 20px;
+        margin: 0;
+        transition: left 0.3s ease;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        overflow-y: auto; /* Keep as fallback */
+        display: flex;
+    }
+
+    /* Show mobile menu button only on mobile */
+    .mobile-menu-btn {
+        display: flex; /* Show the button on mobile with flex for proper centering */
+        border: none;
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1001;
+        background: transparent;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        width: 40px;
+        height: 40px;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        line-height: 1;
+    }
+    
+    /* Properly center the icon both horizontally and vertically */
+    .mobile-menu-btn span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        line-height: 0;
+    }
+    
+    /* Style for when menu is active */
+    .mobile-menu-btn.active {
+        background-color: rgba(0, 98, 204, 0.9);
+        color: white;
+    }
+
+    /* When menu is active (open) */
+    nav ul.active {
+        left: 0;
+    }
+
+    /* Dynamic spacing for menu items with flexbox */
+    nav ul li {
+        width: 100%;
+        margin: 0;
+        text-align: center;
+        padding: 0; /* Remove padding */
+        flex: 1; /* Make items distribute available space */
+        /* Use min/max height constraints for better control */
+        min-height: 40px; 
+        max-height: 80px;
+        display: flex; /* Nested flexbox for alignment */
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Full-height links to maximize touch target */
+    nav ul li a {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    /* Orientation-specific adjustments */
+    @media screen and (orientation: landscape) {
         nav ul {
-            display: flex;
-            list-style: none;
+            padding: 40px 10px 10px; /* Less padding overall */
+            flex-flow: row wrap; /* Allow items to wrap in multiple rows */
+            align-content: flex-start; /* Start items from top */
+            justify-content: flex-start; /* Left align for better space usage */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
         }
-
+        
         nav ul li {
-            margin-left: 2rem;
+            width: auto; /* Auto width instead of fixed percentage */
+            min-width: 120px; /* Minimum width to prevent tiny items */
+            max-width: 150px; /* Maximum width to allow more items per row */
+            min-height: 30px; /* Smaller height per item */
+            max-height: 50px; /* Prevent excessive height */
+            margin: 2px; /* Small margin between items */
+            flex: 0 1 auto; /* Don't force growth, allow shrinking, base on content size */
         }
-
+        
         nav ul li a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
+            font-size: 1rem; /* Smaller font */
+            padding: 5px; /* Add some padding */
+            white-space: nowrap; /* Prevent text wrapping */
         }
+    }
 
-        nav ul li a:hover {
-            color: #0062cc;
+    /* Extra small height adjustments */
+    @media (max-height: 400px) {
+        nav ul {
+            padding-top: 40px;
         }
-
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
+        
+        nav ul li {
+            min-height: 30px;
         }
-
-        /* Hero section */
-        .hero {
-            background: linear-gradient(rgba(0, 98, 204, 0.7), rgba(0, 62, 130, 0.7)), url('/api/placeholder/1600/800') center/cover no-repeat;
-            height: 80vh;
-            display: flex;
-            align-items: center;
-            color: white;
-            text-align: center;
-        }
-
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 2rem;
-            background-color: #ff9500;
-            color: white;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Section styles */
-        section {
-            padding: 5rem 2rem;
-            padding-top: 20px; /* Add some padding to sections */
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            color: #0062cc;
-            position: relative;
-            display: inline-block;
-            padding-bottom: 1rem;
-        }
-
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            left: 25%;
-            bottom: 0;
-            width: 50%;
-            height: 3px;
-            background-color: #ff9500;
-        }
-
-        /* Services section */
-        .services {
-            background-color: #f8f9fa;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .service-card {
-            background-color: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .service-card img {
-            max-height: 50px;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            display: block;
-            margin: auto; /* Centers the image horizontally */
-            margin-top: 20px; /* Adjust this value to center vertically */
-        }
-
-        .service-content {
-            padding: 1.5rem;
-        }
-
-        .service-content h3 {
-            margin-bottom: 1rem;
-            color: #0062cc;
-            text-align: center; /* Centers the text horizontally */
-        }
-
-        /* About section */
-        .about-flex {
-            display: flex;
-            align-items: center;
-            gap: 3rem;
-        }
-
-        .about-image {
-            flex: 1;
-        }
-
-        .about-image img {
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .about-content {
-            flex: 1;
-        }
-
-        .about-content h3 {
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-            color: #0062cc;
-        }
-
-        /* Tech section */
-        .tech {
-            background-color: #f8f9fa;
-        }
-
-        .tech-layout {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .tech-showcase {
-            position: relative;
-            width: 100%;
-            min-height: 400px; /* Set a minimum height to prevent layout shifts */
-        }
-
-        .showcase-item {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
-        }
-
-        .showcase-item.active {
-            position: relative;
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .showcase-item img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-
-        .showcase-content {
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-
-        .showcase-specs {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Changed from auto-fit to exactly 2 columns */
-            gap: 1.5rem; /* Increased gap for better spacing */
-            margin-top: 1.5rem;
-        }
-
-        .spec-item {
-            padding: 0.75rem;
-            background: #f8f9fa;
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Center horizontally */
-            text-align: center; /* Center text alignment */
-        }
-
-        .spec-item span {
-            font-weight: bold;
-            color: #007bff;
-            margin-bottom: 0.25rem;
-            text-align: center; /* Ensure span text is also centered */
-        }
-
-        .spec-item p {
-            text-align: center; /* Ensure paragraph text is centered */
-            margin: 0;
-        }
-
-        .tech-tiles {
-            order: 1;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        .tech-tile {
-            padding: 1.5rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .tech-tile .showcase-content {
-            display: none;
-            padding-top: 1rem;
-            margin-top: 1rem;
-            border-top: 1px solid #dee2e6;
-        }
-
-        @media (max-width: 991px) {
-            /* Override the scroll-padding when mobile menu is active */
-            html.mobile-menu-open {
-                scroll-padding-top: 0 !important; /* Force override */
-            }
-
-            .tech-tile {
-                position: relative;
-                padding: 1.5rem;
-                cursor: pointer;
-                transition: all 0.3s ease-in-out;
-            }
-
-            .tech-tile::after {
-                content: '›';
-                position: absolute;
-                top: 1.6rem; /* Match the h3 position instead of 50% */
-                right: 1.5rem;
-                font-size: 2rem;
-                color: #007bff;
-                transition: transform 0.3s ease;
-                transform-origin: center;
-                height: 24px;
-                line-height: 24px;
-            }
-
-            .tech-tile.expanded::after {
-                transform: rotate(90deg); /* Remove translateY since we're using fixed positioning */
-                color: white; /* Match the expanded state text color */
-            }
-
-            .tech-tile h3 {
-                color: #0062cc;
-                margin-bottom: 0.5rem;
-                padding-right: 2.5rem; /* Increased padding to accommodate arrow */
-            }
-
-            .tech-tile {
-                background: white;
-                border-radius: 10px;
-                padding: 1.5rem;
-                cursor: pointer;
-                transition: all 0.3s ease-in-out;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-                position: relative; /* Keep this */
-                border: 1px solid rgba(0, 123, 255, 0.1);
-            }
-
-            .tech-tile.expanded {
-                background: #007bff;
-                margin-bottom: 1rem;
-                box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
-            }
-
-            .tech-tile.expanded h3 {
-                color: white;
-            }
-
-            .tech-tile.expanded p {
-                color: #333; /* Keep paragraph text dark */
-            }
-
-            .tech-tile.expanded .showcase-content p {
-                color: #333; /* Ensure expanded content text stays dark */
-            }
-
-            .tech-tile {
-                background: #f8f9fa;
-                border-radius: 8px;
-                padding: 1.5rem;
-                cursor: pointer;
-                transition: all 0.3s ease-in-out;
-            }
-
-            .tech-tile h3,
-            .tech-tile p {
-                transition: color 0.3s ease-in-out;
-            }
-
-            .tech-tile .showcase-content {
-                display: block;
-                opacity: 0;
-                max-height: 0;
-                overflow: hidden;
-                margin-top: 0;
-                padding: 0 1rem;
-                background: #f8f9fa;
-                border-radius: 8px;
-                transition: all 0.3s ease-in-out;
-            }
-
-            .tech-tile.expanded {
-                background: #007bff;
-                margin-bottom: 1rem;
-            }
-
-            .tech-tile.expanded h3,
-            .tech-tile.expanded > p {
-                color: white;
-            }
-
-            .tech-tile.expanded .showcase-content {
-                opacity: 1;
-                max-height: 2000px;
-                margin-top: 1rem;
-                padding: 1rem;
-            }
-
-            .tech-showcase {
-                display: none;
-            }
-
-            .tech-tiles {
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            nav {
-                margin: 0;
-                padding: 0;
-            }
-
-            nav ul {
-                position: fixed;
-                top: 0;
-                left: -100%;
-                height: 100vh;
-                width: 80%;
-                background-color: white;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: stretch;
-                margin: 0;
-                padding: 0 !important; /* Force override any inherited padding */
-                gap: 0; /* Remove gap */
-                transition: left 0.3s;
-                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-                scroll-padding-top: 0 !important; /* Force override for the menu */
-            }
-
-            nav ul.active {
-                left: 0;
-            }
-
-            nav ul li {
-                width: 100%;
-                position: relative;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin: 0 !important; /* Force override any inherited margins */
-                padding: 0.5rem 0 !important; /* Force override any inherited padding */
-                list-style: none; /* Remove list styling */
-            }
-
-            nav ul li a {
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.5rem;
-                font-weight: 500;
-                padding: 1.0rem;
-                margin: 0;
-            }
-
-            nav ul li::after {
-                content: '';
-                position: absolute;
-                bottom: -0.25rem; /* Adjust line position */
-                left: 35%;
-                width: 30%;
-                height: 1px;
-                background-color: rgba(0, 0, 0, 0.1);
-            }
-
-            /* Remove any scroll-padding from html for mobile menu */
-            html.mobile-menu-open {
-                scroll-padding-top: 0;
-            }
-
-            .showcase-specs {
-                display: grid;
-                grid-template-columns: 1fr; /* Changed to single column */
-                gap: 1rem; /* Reduced gap for mobile */
-                margin-top: 1.5rem;
-            }
-
-            .spec-item {
-                padding: 1rem;
-                background: #f8f9fa;
-                border-radius: 6px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Added subtle shadow */
-            }
-
-            .spec-item span {
-                font-weight: bold;
-                color: #007bff;
-                margin-bottom: 0.5rem;
-                text-align: center;
-            }
-
-            .spec-item p {
-                text-align: center;
-                margin: 0;
-                line-height: 1.4;
-            }
-
-            /* Reduce general section padding */
-            section {
-                padding: 2rem 1rem;
-            }
-
-            /* Adjust tech tiles for mobile */
-            .tech-tile {
-                padding: 1rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .tech-tile h3 {
-                margin-bottom: 0.25rem;
-                font-size: 1.2rem;
-            }
-
-            .tech-tile p {
-                margin: 0;
-                font-size: 0.95rem;
-                line-height: 1.4;
-            }
-
-            /* Adjust showcase content spacing */
-            .tech-tile .showcase-content {
-                margin-top: 0.5rem;
-                padding: 0.5rem;
-            }
-
-            /* Adjust spec items spacing */
-            .showcase-specs {
-                gap: 0.5rem;
-                margin-top: 0.75rem;
-            }
-
-            .spec-item {
-                padding: 0.75rem;
-            }
-
-            .spec-item span {
-                margin-bottom: 0.25rem;
-                font-size: 0.9rem;
-            }
-
-            .spec-item p {
-                font-size: 0.9rem;
-                line-height: 1.3;
-            }
-
-            /* Adjust expanded state spacing */
-            .tech-tile.expanded {
-                margin-bottom: 0.75rem;
-            }
-
-            .tech-tile.expanded .showcase-content {
-                margin-top: 0.75rem;
-                padding: 0.75rem;
-            }
-
-            /* Mobile-specific override */
-            .contact-form button[type="submit"] {
-                font-size: 1.0rem !important;
-                padding: 0.5rem 1.25rem !important;
-                /* Keep other properties from base style */
-                background-color: #ff9500;
-                color: white;
-                border: none;
-                border-radius: 30px;
-                cursor: pointer;
-                transition: transform 0.3s, box-shadow 0.3s;
-            }
-        }
-
-        @media (min-width: 992px) {
-            .tech-layout {
-                flex-direction: row;
-            }
-
-            .tech-showcase {
-                order: 1;
-                flex: 0 0 60%;
-            }
-
-            .tech-tiles {
-                order: 2;
-                flex: 0 0 40%;
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .tech-tile {
-                padding: 1.5rem;
-                background: #f8f9fa;
-                color: #333;  /* Keep text dark */
-                border-radius: 8px;
-                cursor: pointer;
-                transition: all 0.5s ease-in-out;
-            }
-
-            .tech-tile:hover {
-                background: #e9ecef;
-                color: #333;  /* Keep text dark on hover */
-                transform: translateX(5px);
-                transition: all 0.15s ease-out;
-            }
-
-            .tech-tile.active {
-                background: #007bff;
-                color: white;  /* Only change text to white when active */
-                transform: translateX(10px);
-                transition: all 0.5s ease-in-out;
-            }
-
-            .tech-tile:hover h3,
-            .tech-tile:hover p {
-                color: #333;  /* Keep headings and paragraphs dark on hover */
-                transition: color 0.15s ease-out;
-            }
-
-            .tech-tile.active h3,
-            .tech-tile.active p {
-                color: white;  /* Only change to white when active */
-                transition: color 0.5s ease-in-out;
-            }
-
-            .showcase-item {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                opacity: 0;
-                visibility: hidden;
-                transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
-            }
-
-            .tech-showcase .showcase-item {
-                background-color: white;
-                border-radius: 10px;
-                overflow: hidden;
-                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-                transform: translateY(-10px);
-            }
-
-            .tech-showcase .showcase-item img {
-                width: 100%;
-                height: auto;
-                border-radius: 10px 10px 0 0;
-            }
-
-            .tech-showcase .showcase-content {
-                padding: 1.5rem;
-                background: white;
-                margin-top: 0;
-                border-radius: 0 0 10px 10px;
-            }
-        }
-
-        /* Testimonials section */
-        .testimonials-container {
-            position: relative;
-            max-width: 800px;
-            margin: 0 auto;
-            overflow: hidden;
-        }
-
-        .testimonials-slider {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-        }
-
-        .testimonial {
-            min-width: 100%;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .testimonial-content {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        .testimonial-content::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 15px 15px 0;
-            border-style: solid;
-            border-color: white transparent transparent;
-        }
-
-        .client {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .client-image {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-bottom: 1rem;
-        }
-
-        .client-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .slider-controls {
-            display: flex;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        .slider-btn {
-            background-color: transparent;
-            border: none;
-            font-size: 1.5rem;
-            color: #0062cc;
-            cursor: pointer;
-            padding: 0.5rem;
-            margin: 0 1rem;
-        }
-
-        /* Contact section */
-        .contact {
-            background: linear-gradient(rgba(0, 98, 204, 0.9), rgba(0, 62, 130, 0.9)), url('/api/placeholder/1600/800') center/cover no-repeat;
-            color: white;
-        }
-
-        .contact-flex {
-            display: flex;
-            gap: 3rem;
-        }
-
-        .contact-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column; /* Stack items vertically */
-            justify-content: space-between; /* Distribute items evenly across the vertical space */
-            height: 100%; /* Ensure the container takes up the full height */
-        }
-
-        .contact-form {
-            flex: 1;
-        }
-
-        .contact-info h3, .contact-form h3 {
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-        }
-
-        .info-item {
-            display: flex;
-            align-items: center; /* Aligns the icon and text vertically */
-            gap: 1.5rem; /* Adds spacing between the icon and text */
-            margin-bottom: 1.5rem; /* Optional: Add spacing between items for smaller screens */
-        }
-
-        .info-item .info-icon {
-            flex-shrink: 0; /* Prevents the icon from resizing */
-            width: 40px; /* Set a uniform width for the icons */
-            height: 40px; /* Set a uniform height for the icons */
-            display: flex;
-            align-items: center; /* Centers the icon vertically */
-            justify-content: center; /* Centers the icon horizontally */
-            font-size: 1.5rem; /* Adjust the font size of the icon */
-            border-radius: 50%; /* Makes the icon background circular */
-        }
-
-        .info-item div {
-            display: flex;
-            flex-direction: column; /* Ensures the text stacks vertically */
-            justify-content: center; /* Aligns the text vertically */
-        }
-
-        .info-item a {
-            display: inline-block; /* Ensures the link behaves like regular text */
-            color: inherit; /* Inherits the text color */
-            text-decoration: none; /* Removes underline */
-            line-height: 1.5; /* Matches the line height of other text */
-        }
-
-        .info-item p {
-            margin: 0; /* Removes any default margin that might cause misalignment */
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 5px;
+        
+        nav ul li a {
             font-size: 1rem;
         }
+    }
 
-        textarea.form-control {
-            height: 150px;
-            resize: none;
+    /* Device-specific adjustments for iPhone SE and similar */
+    @media (max-height: 320px) {
+        nav ul li {
+            min-height: 25px;
         }
+    }
 
-        .contact .section-title h2 {
-            color: white;
-        }
+    /* Remove the visual scrollable indicator */
+    nav ul::after {
+        display: none;
+    }
 
-        .info-icon {
-            width: 80px; /* Increase the size of the icons */
-            height: 80px; /* Increase the size of the icons */
-            display: flex;
-            align-items: center; /* Centers the icon vertically */
-            justify-content: center; /* Centers the icon horizontally */
-            border-radius: 50%; /* Keeps the circular shape */
-            overflow: hidden; /* Ensures the SVG fits within the circle */
-        }
+    /* Mobile header adjustments */
+    header {
+        position: fixed !important; /* Change from sticky to fixed for mobile */
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        z-index: 1000;
+        /* Improve performance with hardware acceleration */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+    
+    /* Add padding to body to prevent content from hiding under fixed header */
+    body {
+        padding-top: 92px; /* Adjust this value to match your header height */
+    }
+    
+    /* Adjust padding for first section to account for sticky header */
+    section:first-of-type {
+        margin-top: 0;
+    }
+    
+    /* Retain scroll padding for anchor links */
+    html {
+        scroll-padding-top: 92px; /* Match the mobile header height */
+    }
+    
+    section[id] {
+        scroll-margin-top: 92px; /* Match the mobile scroll-padding-top */
+    }
+}
 
-        .info-icon img {
-            width: 80%; /* Adjust the size of the SVG inside the circle */
-            height: 80%; /* Maintain aspect ratio */
-        }
+/* Fix mobile menu visibility - ensure it appears on screen */
+@media (max-width: 768px) {
+    /* Ensure menu button is working */
+    .mobile-menu-btn {
+        display: flex;
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1500; /* Increased z-index */
+    }
+    
+    /* Fix the nav ul element that needs to slide in */
+    nav ul {
+        position: fixed;
+        top: 0;
+        left: -100%; /* Start off-screen */
+        height: 100%;
+        width: 80%;
+        max-width: 300px;
+        background-color: white;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 60px 0 20px;
+        margin: 0;
+        transition: left 0.3s ease;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1400; /* Increased z-index but below menu button */
+        overflow-y: auto;
+    }
+    
+    /* Ensure active class actually works to show the menu */
+    nav ul.active {
+        left: 0 !important;
+        display: flex !important; /* Force display */
+    }
+    
+    /* Fix menu items */
+    nav ul li {
+        width: 100%;
+        text-align: center;
+        padding: 1rem 0;
+    }
+    
+    /* Fix any potential overriding display properties */
+    nav {
+        display: block !important;
+    }
+    
+    /* Change background color of nav in mobile to make it more visible */
+    nav ul.active {
+        background-color: rgba(255, 255, 255, 0.98);
+    }
+}
 
-        /* Base button style */
-        .contact-form button[type="submit"] {
-            font-size: 1.1rem;
-            padding: 1rem 2rem;
-            background-color: #ff9500;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
+/* Add this to your existing CSS file */
+/* Fix mobile menu visibility without replacing existing styles */
+@media (max-width: 768px) {
+    /* Ensure menu has correct z-index and display properties */
+    nav ul {
+        z-index: 1400 !important; 
+        background-color: white !important;
+    }
+    
+    nav ul.active {
+        left: 0 !important;
+        display: flex !important;
+    }
+    
+    /* Enhance visibility of menu button */
+    .mobile-menu-btn {
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+        color: #333 !important;
+    }
+    
+    .mobile-menu-btn.active {
+        background-color: rgba(0, 98, 204, 0.9) !important;
+        color: white !important;
+    }
+}
 
-        /* Privacy Policy section */
-        .privacy-policy ul {
-            padding-left: 40px; /* Adjust this value to control the indentation */
-        }
+/* Fix mobile menu - consolidate all mobile menu styles into one cohesive block */
+@media (max-width: 768px) {
+    /* Basic mobile menu button styling */
+    .mobile-menu-btn {
+        display: block;
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 2000; /* Highest z-index */
+        background-color: rgba(255, 255, 255, 0.9);
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Active state for menu button */
+    .mobile-menu-btn.active {
+        background-color: rgba(0, 98, 204, 0.9);
+        color: white;
+    }
 
-        .privacy-policy ul li {
-            margin-bottom: 10px; /* Optional: Add spacing between list items */
-        }
+    /* Basic mobile nav styling */
+    nav {
+        display: block !important;
+    }
+    
+    /* Mobile menu - positioned off-screen by default */
+    nav ul {
+        position: fixed;
+        top: 0;
+        left: -100%; /* Start off-screen */
+        height: 100vh;
+        width: 80%;
+        max-width: 300px;
+        background-color: white;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 0 20px;
+        margin: 0;
+        transition: left 0.3s ease;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1900; /* Just below menu button */
+        overflow-y: auto;
+        display: flex;
+    }
+    
+    /* Active state - slide in from left */
+    nav ul.active {
+        left: 0 !important;
+        display: flex !important;
+    }
+    
+    /* Menu items styling */
+    nav ul li {
+        width: 100%;
+        text-align: center;
+        padding: 1rem 0;
+    }
+    
+    /* Add overlay when menu is open */
+    .mobile-menu-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1800;
+    }
+    
+    .mobile-menu-overlay.active {
+        display: block;
+    }
+}
 
-        /* Terms of Service section */
-        .terms-of-service ul {
-            padding-left: 40px; /* Adjust this value to control the indentation */
-        }
+/* Hero section */
+.hero {
+    background: url('../images/road.png');  
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed; /* This prevents the background from scrolling */
+    height: calc(100vh - 115px); /* Full viewport height minus the header (80px logo + 35px nav) */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center content horizontally */
+    color: white;
+    text-align: center;
+    position: relative;
+}
 
-        .terms-of-service ul li {
-            margin-bottom: 10px; /* Optional: Add spacing between list items */
-        }
+/* Hero content container */
+.hero-content {
+    max-width: 800px;
+    padding: 2rem;
+    z-index: 2; /* Ensure content appears above any background elements */
+}
 
-        /* Footer */
-        footer {
-            background-color: #001a33;
-            color: white;
-            padding: 3rem 0 1rem;
-        }
+/* Hero heading */
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
 
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
+/* Hero subtext */
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
 
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 3rem;
-            margin-bottom: 2rem;
-        }
+/* Hero call to action button */
+.hero .btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: #ff9500;
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: transform 0.3s, background-color 0.3s;
+    border: none;
+}
 
-        .footer-col h4 {
-            margin-bottom: 1.5rem;
-            color: #ff9500;
-            font-size: 1.2rem;
-        }
+.hero .btn:hover {
+    background-color: #e08600;
+    transform: translateY(-3px);
+}
 
-        .footer-col ul {
-            list-style: none;
-        }
+/* Fix background-attachment: fixed for iOS mobile devices */
+@supports (-webkit-overflow-scrolling: touch) {
+    .hero {
+        background-attachment: scroll; /* Use scroll instead of fixed on iOS */
+    }
+}
 
-        .footer-col ul li {
-            margin-bottom: 0.8rem;
-        }
+/* Mobile adjustments for the hero section */
+@media (max-width: 768px) {
+    .hero {
+        height: calc(100vh - 92px); /* Adjust for mobile header height */
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    .hero .cta-btn {
+        padding: 0.8rem 1.5rem;
+    }
+}
 
-        .footer-col ul li a {
-            color: #ccc;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
+/* Section styles */
+section:not(.hero) {
+    min-height: 60vh; /* All other sections should be 60% of viewport height */
+    padding-bottom: 4rem; /* Keep your existing padding */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+}
 
-        .footer-col ul li a:hover {
-            color: white;
-        }
+/* For sections with IDs (likely scroll targets), ensure proper positioning */
+section[id] {
+    scroll-margin-top: 105px; /* Match the scroll-padding-top */
+}
 
-        .social-links {
-            display: flex;
-            gap: 1rem;
-        }
+/* Mobile adjustments for section heights */
+@media (max-width: 768px) {
+    .hero {
+        height: calc(100vh - 92px); /* Adjust for mobile header height */
+    }
+    
+    section:not(.hero) {
+        min-height: 70vh;
+        padding: 2rem 1rem; /* Use your existing mobile padding */
+    }
+}
 
-        .social-links a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            color: white;
-            text-decoration: none;
-            transition: background-color 0.3s;
-        }
+/* Section transitions with improved alignment while keeping gradient effects */
+/* About section transition to Technology section */
+.about {
+    position: relative;
+    padding-bottom: 4rem; /* Standard padding, removing extra padding */
+    margin-bottom: 0;
+    z-index: 1;
+    background: #ffffff; /* Solid background */
+    overflow: visible;
+}
 
-        .social-links a:hover {
-            background-color: #ff9500;
-        }
+/* Remove the white curved corner */
+.about::after {
+    display: none;
+}
 
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 1.5rem;
-            text-align: center;
-            color: #ccc;
-            font-size: 0.9rem;
-        }
+/* Technology section with no negative margins */
+.tech {
+    position: relative;
+    margin-top: 0; /* Remove negative margin */
+    margin-bottom: 0; /* Remove negative margin */
+    padding-top: 4rem; /* Add proper padding instead */
+    padding-bottom: 4rem;
+    z-index: 0;
+    overflow: visible;
+    background-color: #f8f9fa;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+}
 
-        /* Responsive styles */
-        @media (max-width: 992px) {
-            .about-flex {
-                flex-direction: column;
-            }
-            .contact-flex {
-                flex-direction: column;
-            }
-        }
+/* Who We Help section - no negative margin */
+.who-we-help {
+    position: relative;
+    overflow: visible; /* Changed from hidden to visible */
+    padding-top: 60px; /* Add top padding for spacing */
+    background-color: #ffffff; /* Ensure this section has its own background */
+    z-index: 1; /* Ensure proper stacking context */
+}
 
-        @media (max-width: 768px) {
-            .nav-container {
-                padding: 0 1rem;
-            }
-            
-            nav ul {
-                position: fixed;
-                top: 0;
-                left: -100%;
-                height: 100vh;
-                width: 80%;
-                background-color: white;
-                flex-direction: column;
-                align-items: center;
-                padding-top: 5rem;
-                transition: left 0.3s;
-                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-            }
-            
-            nav ul.active {
-                left: 0;
-            }
-            
-            nav ul li {
-                margin: 1.5rem 0;
-            }
-            
-            .mobile-menu-btn {
-                display: block;
-                z-index: 1001;
-            }
-            
-            .hero h1 {
-                font-size: 2.0rem;
-            }
-            
-            section {
-                padding: 3rem 1rem;
-            }
-        }
+/* Background image container - improved positioning */
+.who-we-help-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Behind content */
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+/* Individual background images - fixed visibility */
+.who-we-help-bg-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0; /* Start hidden */
+    transition: opacity 0.8s ease-in-out;
+    pointer-events: none;
+}
+
+/* Active background image */
+.who-we-help-bg-image.active {
+    opacity: 1; /* Show only the active one */
+}
+
+/* Ensure the container properly contains all content */
+.who-we-help .container {
+    position: relative;
+    z-index: 1; /* Above background images */
+    padding-top: 20px; /* Add some padding at the top */
+}
+
+/* Adjust background opacity and styling for different screen sizes */
+@media (max-width: 768px) {
+    .who-we-help-bg {
+        opacity: 0.1; /* Even more subtle on mobile */
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .about {
+        padding-bottom: 3rem; /* Standard padding on mobile */
+    }
+    
+    .about::before {
+        height: 70px; /* Smaller gradient area on mobile */
+    }
+    
+    .tech {
+        margin-top: 0; /* No overlap */
+        margin-bottom: 10px; /* Less space between sections on mobile */
+        padding-top: 3rem;
+        padding-bottom: 40px; /* Smaller bottom padding on mobile */
+    }
+    
+    .tech::after {
+        height: 70px; /* Smaller gradient on mobile */
+    }
+    
+    .who-we-help {
+        padding-top: 40px; /* Smaller top padding on mobile */
+    }
+    
+    .who-we-help::before {
+        height: 70px; /* Smaller gradient area on mobile */
+    }
+}
+
+/* Make sure section content stays properly positioned */
+.who-we-help .container {
+    position: relative;
+    z-index: 2; /* Keep above the pseudo-element */
+    margin: 0 auto;
+}
+
+/* Technology section margins and padding */
+.tech {
+    position: relative;
+    z-index: 2; /* Higher than who-we-help section */
+    background-color: #f8f9fa;
+    padding-bottom: 60px; /* Add bottom padding for spacing */
+    box-shadow: 0 5px 10px rgba(0,0,0,0.05); /* Subtle shadow for separation */
+    background-image: url('../images/backgroundblue.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: left center;
+    background-repeat: no-repeat;
+    overflow: visible; /* Allow content to extend past section boundaries */
+}
+
+/* Who We Help section transition from Technology section */
+.who-we-help {
+    position: relative;
+    padding-top: 100px; /* Add extra padding at the top for transition */
+    background: linear-gradient(to top, #ffffff 80%, rgba(255, 255, 255, 0) 100%);
+    z-index: 1;
+}
+
+/* Make sure section content stays above the background transitions */
+.container {
+    position: relative;
+    z-index: 2;
+    padding-bottom: 5vh;
+    padding-top: 5vh;
+}
+
+/* Prevent any potential spacing issues in the transition areas */
+section {
+    overflow: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title h2 {
+    font-size: 2.5rem;
+    color: #0062cc;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 1rem;
+}
+
+.section-title h2::after {
+    content: '';
+    position: absolute;
+    left: 25%;
+    bottom: 0;
+    width: 50%;
+    height: 3px;
+    background-color: #ff9500;
+}
+
+/* Services section - removing curved corner */
+.services {
+    background-color: #f8f9fa;
+    position: relative;
+    z-index: 1; /* Ensure proper stacking context */
+    overflow: hidden; /* Prevent image from creating scrollbars */
+}
+
+/* Remove the base square and curved corner pseudo-elements */
+.services::before,
+.services::after {
+    display: none; /* Hide both pseudo-elements */
+}
+
+/* Keep the pencils background image separate and ensure it's visible */
+.services-background {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 40%; /* Larger base size */
+    padding-top: 40%; /* Maintain aspect ratio */
+    background-image: url('../images/pencils.png');
+    background-size: contain; /* Preserve aspect ratio */
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    z-index: 1; /* Place behind content but above the basic background */
+    pointer-events: none; /* Allow interaction with content above it */
+}
+
+/* Responsive adjustments to remove services corners */
+@media (max-width: 768px) {
+    .about::before, 
+    .about::after {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .about::after {
+        border-radius: 60px 0 0 0; /* Smaller curve for about */
+    }
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.service-card {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-out, 
+                box-shadow 0.2s ease-out,
+                opacity 0.2s ease-out;
+    will-change: transform, box-shadow, opacity;
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.service-card img {
+    max-height: 50px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: auto; /* Centers the image horizontally */
+    margin-top: 20px; /* Adjust this value to center vertically */
+    transition: transform 0.2s ease-out;
+    will-change: transform;
+}
+
+.service-content {
+    padding: 1.5rem;
+}
+
+.service-content h3 {
+    margin-bottom: 1rem;
+    color: #0062cc;
+    text-align: center; /* Centers the text horizontally */
+    transition: color 0.2s ease-out;
+}
+
+.service-card.in-view {
+    opacity: 1;
+}
+
+/* Prevent text selection on interactive elements */
+button, a, .service-card, .tech-tile, .about-image img {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+
+/* Remove the opacity change on active - this was causing the dulling effect */
+a:active, button:active, .service-card:active, .tech-tile:active, .about-image img:active {
+    opacity: 1; /* Keep full opacity instead of reducing it */
+}
+
+/* Reduce transition time on mobile for more responsive animations */
+@media (max-width: 768px) {
+    .service-card,
+    .service-card img,
+    .service-content h3 {
+        transition-duration: 0.15s; /* Faster transitions on mobile for immediate feedback */
+    }
+}
+
+/* Mobile service card animations */
+@media (max-width: 768px) {
+    .service-card {
+        transition: transform 0.3s ease-out, 
+                    box-shadow 0.3s ease-out;
+        /* Initial state slightly raised for smoother transition */
+        transform: translateY(-3px);
+        opacity: 0.9;
+    }
+    
+    .service-card img {
+        transition: transform 0.3s ease-out;
+        /* Initial state slightly scaled for smoother transition */
+        transform: scale(1.03);
+    }
+    
+    .service-content h3 {
+        transition: color 0.3s ease-out;
+        /* Initial color already slightly shifted toward target */
+        color: #0e70d4;
+    }
+    
+    /* Apply hover effects to in-view cards on mobile */
+    .service-card.in-view {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        opacity: 1;
+    }
+    
+    .service-card.in-view img {
+        transform: scale(1.1);
+    }
+    
+    .service-card.in-view .service-content h3 {
+        color: #3498db;
+    }
+}
+
+/* About section */
+.about-flex {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+.about-image {
+    flex: 1;
+}
+
+.about-image img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    cursor: pointer; /* Add cursor pointer to indicate it's clickable */
+    transition: transform 0.2s ease;
+}
+
+.about-image img:hover {
+    transform: scale(1.02); /* Slight scale effect on hover */
+}
+
+.about-content {
+    flex: 1;
+}
+
+.about-content h3 {
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+    color: #0062cc;
+}
+
+/* Image modal styles */
+.modal {
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* Initially non-interactive */
+    /* Ensure modal container does not affect page layout */
+    overflow-y: auto;
+    /* Use GPU acceleration for smoother transitions */
+    will-change: opacity;
+}
+
+.modal.active {
+    display: flex !important; /* Force flex display when active */
+    opacity: 1;
+    pointer-events: auto; /* Make interactive when visible */
+}
+
+.modal-content {
+    max-width: 90%;
+    max-height: 90vh;
+    margin: auto;
+    display: block;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    border-radius: 5px;
+    animation: zoom 0.3s ease forwards;
+}
+
+@keyframes zoom {
+    from {transform: scale(0.9);}
+    to {transform: scale(1);}
+}
+
+/* Fix for the close button in the modal */
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    color: white;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 2100;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transition: background-color 0.2s, transform 0.2s;
+    line-height: 0; /* Fix vertical alignment */
+    padding-bottom: 8px; /* Keeping this value as is since it's working as desired */
+    text-align: center;
+}
+
+.close-modal:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+/* Focus handling and accessibility */
+.modal-content:focus,
+.close-modal:focus {
+    outline: 2px solid #0062cc;
+}
+
+/* Make modal work better on mobile */
+@media (max-width: 768px) {
+    .modal-content {
+        max-width: 95%;
+    }
+    
+    .close-modal {
+        top: 10px;
+        right: 10px;
+        font-size: 30px;
+    }
+}
+
+/* Tech section */
+.tech {
+    background-color: #f8f9fa;
+}
+
+.tech .tech-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.tech .tech-showcase {
+    position: relative;
+    width: 100%;
+    min-height: 400px; /* Set a minimum height to prevent layout shifts */
+}
+
+.tech .showcase-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+.tech .showcase-item.active {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+}
+
+.tech .showcase-item img {
+    border-radius: 8px;
+    max-height: 15rem;
+    max-width: 100%;
+    height: auto; /* Maintain aspect ratio */
+    width: auto; /* Adjust to fit the image size */
+    border-radius: 10px 10px 0 0; /* Rounded corners for the top */
+    justify-content: center; /* Center the image horizontally */
+    display: block; /* Ensure the image is a block element for centering */
+    margin: 0 auto; /* Center the image in the container */
+}
+
+.tech .showcase-content {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.tech .showcase-specs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Changed from auto-fit to exactly 2 columns */
+    gap: 1.5rem; /* Increased gap for better spacing */
+    margin-top: 1.5rem;
+}
+
+.tech .spec-item {
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center horizontally */
+    text-align: center; /* Center text alignment */
+}
+
+.tech .spec-item span {
+    font-weight: bold;
+    color: #0062cc;
+    margin-bottom: 0.25rem;
+    text-align: center; /* Ensure span text is also centered */
+}
+
+.tech .spec-item p {
+    text-align: center; /* Ensure paragraph text is centered */
+    margin: 0;
+}
+
+.tech .tech-tiles {
+    order: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.tech .tech-tile {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tech .tech-tile .showcase-content {
+    display: none;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Who We Help section */
+.who-we-help .who-we-help-container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    overflow: hidden !important; /* Force hidden overflow */
+    padding: 0 50px; /* Add padding to container to show adjacent card edges */
+}
+
+.who-we-help .who-we-help-slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%;
+}
+
+.who-we-help .help-item {
+    min-width: 100%;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+}
+
+/* Enhanced Who We Help section with gradient opacity effect */
+@media (min-width: 769px) {
+  .who-we-help .who-we-help-container {
+    max-width: 800px; /* Narrower container */
+    overflow: hidden !important; 
+    padding: 0; /* Remove padding that was showing adjacent slides */
+  }
+  
+  .who-we-help .who-we-help-slider {
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    display: flex;
+    align-items: center;
+  }
+  
+  .who-we-help .help-item {
+    position: relative;
+    min-width: 100%;
+    opacity: 0; /* Hide all slides by default */
+    visibility: hidden; /* Completely hide non-active slides */
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    padding: 1rem 2rem;
+    transform: scale(0.95); /* Slightly smaller initial scale */
+  }
+  
+  /* Enhanced active slide with border and callout look */
+  .who-we-help .help-item.active {
+    opacity: 1 !important; /* Show only active slide */
+    visibility: visible !important; /* Make active slide visible */
+    transform: scale(1); /* Normal scale for active slide */
+    z-index: 2;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 98, 204, 0.15);
+    filter: blur(0);
+  }
+  
+  /* Keep visual indicator on active slide */
+  .who-we-help .help-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, #0062cc, #0062cc88);
+    border-radius: 10px 10px 0 0;
+  }
+  
+  /* Remove edge gradients as they're no longer needed */
+  .who-we-help .who-we-help-container::before,
+  .who-we-help .who-we-help-container::after {
+    display: none;
+  }
+}
+
+/* Update slider controls positioning */
+.who-we-help .slider-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  position: relative;
+  z-index: 5;
+}
+
+/* Shared styles for slider controls */
+.tech .slider-controls,
+.who-we-help .slider-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.tech .slider-btn,
+.who-we-help .slider-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #0062cc;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin: 0 1rem;
+}
+
+/* Add navigation dots for Who We Help section */
+.who-we-help .slide-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 1.5rem;
+    /* Create a fixed width container to maintain consistent spacing */
+    min-width: 120px; 
+}
+
+.who-we-help .slide-dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 30px; /* Larger value to ensure rounded ends when expanded */
+    background-color: #ccc;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); /* Smooth transition with easing */
+    border: none;
+    padding: 0;
+    flex-shrink: 0; /* Prevent dots from shrinking */
+}
+
+.who-we-help .slide-dot.active {
+    width: 30px; /* Double width for active dot */
+    background-color: #0062cc;
+    transform: scale(1.1); /* Slight scale for emphasis */
+}
+
+/* Improved hover state */
+.who-we-help .slide-dot:not(.active):hover {
+    background-color: #a8a8a8;
+    transform: scale(1.1);
+}
+
+/* Focus styles for accessibility */
+.who-we-help .slide-dot:focus-visible {
+    outline: 2px solid #0062cc;
+    outline-offset: 2px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .who-we-help .slide-dots {
+        gap: 0.6rem;
+        min-width: 100px;
+    }
+    
+    .who-we-help .slide-dot {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .who-we-help .slide-dot.active {
+        width: 20px; /* Slightly smaller on mobile */
+    }
+}
+
+/* Update the slider controls to include dots in between */
+.who-we-help .slider-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+/* Ensure this works in mobile view too */
+@media (max-width: 768px) {
+    .who-we-help .slide-dots {
+        gap: 0.4rem;
+    }
+    
+    .who-we-help .slide-dot {
+        width: 8px;
+        height: 8px;
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    /* Tech section mobile */
+    .tech .showcase-specs {
+        display: grid;
+        grid-template-columns: 1fr; /* Changed to single column */
+        gap: 1rem; /* Reduced gap for mobile */
+        margin-top: 1.5rem;
+    }
+    
+    .tech .tech-tile {
+        position: relative;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .tech .tech-tile::after {
+        content: '›';
+        position: absolute;
+        top: 1.6rem; /* Match the h3 position instead of 50% */
+        right: 1.5rem;
+        font-size: 2rem;
+        color: #0062cc;
+        transition: transform 0.3s ease;
+        transform-origin: center;
+        height: 24px;
+        line-height: 24px;
+    }
+
+    .tech .tech-tile.expanded::after {
+        transform: rotate(90deg); /* Remove translateY since we're using fixed positioning */
+        color: white; /* Match the expanded state text color */
+    }
+
+    .tech .tech-tile h3 {
+        color: #0062cc;
+        margin-bottom: 0.5rem;
+        padding-right: 2.5rem; /* Increased padding to accommodate arrow */
+    }
+
+    .tech .tech-tile {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        position: relative; /* Keep this */
+        border: 1px solid rgba(0, 123, 255, 0.1);
+    }
+
+    .tech .tech-tile.expanded {
+        background: #0062cc;
+        margin-bottom: 1rem;
+        box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
+    }
+
+    .tech .tech-tile.expanded h3 {
+        color: white;
+    }
+
+    .tech .tech-tile.expanded p {
+        color: #333; /* Keep paragraph text dark */
+    }
+
+    .tech .tech-tile.expanded .showcase-content p {
+        color: #333; /* Ensure expanded content text stays dark */
+    }
+
+    .tech .tech-tile {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .tech .tech-tile h3,
+    .tech .tech-tile p {
+        transition: color 0.3s ease-in-out;
+    }
+
+    .tech .tech-tile .showcase-content {
+        display: block;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        margin-top: 0;
+        padding: 0 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .tech .tech-tile.expanded {
+        background: #0062cc;
+        margin-bottom: 1rem;
+    }
+
+    .tech .tech-tile.expanded h3,
+    .tech .tech-tile.expanded > p {
+        color: white;
+    }
+
+    .tech .tech-tile.expanded .showcase-content {
+        opacity: 1;
+        max-height: 2000px;
+        margin-top: 1rem;
+        padding: 1rem;
+    }
+
+    .tech .tech-showcase {
+        display: none;
+    }
+
+    .tech .tech-tiles {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    /* Who We Help section mobile */
+    .who-we-help {
+        padding-top: 60px; /* Ensure content isn't hidden by header */
+    }
+    
+    .who-we-help .who-we-help-container {
+        padding: 0 15px;
+        overflow: visible;
+    }
+    
+    .who-we-help .help-item {
+        min-width: 85%;
+        padding: 1rem;
+        margin-right: 15px;
+    }
+    
+    .who-we-help .help-content {
+        margin-bottom: 0.6rem; /* Ensure consistent spacing in mobile view too */
+    }
+    
+    /* Improved positioning for Who We Help swipe indicators */
+    .who-we-help .who-we-help-container::before {
+        content: '';
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%233498db"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>') no-repeat;
+        display: block;
+        width: 36px;
+        height: 36px;
+        position: absolute;
+        top: calc(35% - 3.5rem); /* Adjust top position to account for content height */
+        right: 0;
+        z-index: 10;
+        background-size: contain;
+        opacity: 0.8;
+        animation: pulseRight 1.5s ease-in-out infinite;
+    }
+    
+    .who-we-help .who-we-help-container::after {
+        display: none;
+    }
+}
+
+@media (min-width: 992px) {
+    /* Tech section desktop */
+    .tech .tech-layout {
+        flex-direction: row;
+    }
+
+    .tech .tech-showcase {
+        order: 1;
+        flex: 0 0 60%;
+    }
+
+    .tech .tech-tiles {
+        order: 2;
+        flex: 0 0 40%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .tech .tech-tile {
+        padding: 1.5rem;
+        background: #f8f9fa;
+        color: #333;  /* Keep text dark */
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.5s ease-in-out;
+    }
+
+    .tech .tech-tile:hover {
+        background: #e9ecef;
+        color: #333;  /* Keep text dark on hover */
+        transform: translateX(5px);
+        transition: all 0.15s ease-out;
+    }
+
+    .tech .tech-tile.active {
+        background: #0062cc;
+        color: white;  /* Only change text to white when active */
+        transform: translateX(10px);
+        transition: all 0.5s ease-in-out;
+    }
+
+    .tech .tech-tile:hover h3,
+    .tech .tech-tile:hover p {
+        color: #333;  /* Keep headings and paragraphs dark on hover */
+        transition: color 0.15s ease-out;
+    }
+
+    .tech .tech-tile.active h3,
+    .tech .tech-tile.active p {
+        color: white;  /* Only change to white when active */
+        transition: color 0.5s ease-in-out;
+    }
+
+    .tech .showcase-item {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    }
+
+    .tech .tech-showcase .showcase-item {
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        transform: translateY(-10px);
+    }
+
+    .tech .tech-showcase {
+        width: 100%;
+        height: auto;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .tech .tech-showcase .showcase-content {
+        padding: 1.5rem;
+        background: white;
+        margin-top: 0;
+        border-radius: 0 0 10px 10px;
+    }
+}
+
+/* Ensure desktop hover effects still work */
+@media (min-width: 769px) {
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .service-card:hover img {
+        transform: scale(1.1);
+    }
+    
+    .service-card:hover .service-content h3 {
+        color: #3498db;
+    }
+}
+
+/* Enhance desktop hover effects with smoother transitions */
+@media (min-width: 769px) {
+    /* Base state for service cards */
+    .service-card {
+        transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+        overflow: hidden; /* Ensure image doesn't overflow during scale */
+    }
+    
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Add smooth transition to images */
+    .service-card img {
+        transform: scale(1);
+        transition: transform 0.5s ease-out;
+        will-change: transform;
+    }
+    
+    .service-card:hover img {
+        transform: scale(1.1);
+    }
+    
+    /* Text color transitions */
+    .service-content h3 {
+        transition: color 0.4s ease-out;
+    }
+    
+    .service-card:hover .service-content h3 {
+        color: #3498db;
+    }
+    
+    /* Add subtle transition to paragraph text */
+    .service-content p {
+        transition: color 0.4s ease-out;
+    }
+}
+
+/* Testimonials section */
+.testimonials-container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.testimonials-slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.testimonial {
+    min-width: 100%;
+    padding: 2rem;
+    text-align: center;
+}
+
+.testimonial-content {
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.testimonial-content::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 15px 15px 0;
+    border-style: solid;
+    border-color: white transparent transparent;
+}
+
+.testimonial-content h3 {
+    margin-bottom: 12px;  /* Reduced from 16px to 12px */
+    color: #3498db;
+}
+
+.client {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.client-image {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #8cc4e9;
+    position: relative;
+}
+
+.client-image img {
+    max-width: 80%;
+    max-height: 80%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.slider-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.slider-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #0062cc;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin: 0 1rem;
+}
+
+/* Testimonial Image Styling */
+.testimonial-icon {
+    max-width: 70%;
+    max-height: 70%;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Contact section */
+.contact {
+    background: linear-gradient(rgba(0, 98, 204, 0.9), rgba(0, 62, 130, 0.9));
+    color: white;
+}
+
+.contact-flex {
+    display: flex;
+    gap: 3rem;
+}
+
+.contact-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    justify-content: space-between; /* Distribute items evenly across the vertical space */
+    height: 100%; /* Ensure the container takes up the full height */
+}
+
+.contact-form {
+    flex: 1;
+}
+
+.contact-info h3, .contact-form h3 {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center; /* Aligns the icon and text vertically */
+    gap: 1.5rem; /* Adds spacing between the icon and text */
+    margin-bottom: 1.5rem; /* Optional: Add spacing between items for smaller screens */
+}
+
+.info-item .info-icon {
+    flex-shrink: 0; /* Prevents the icon from resizing */
+    width: 40px; /* Set a uniform width for the icons */
+    height: 40px; /* Set a uniform height for the icons */
+    display: flex;
+    align-items: center; /* Centers the icon vertically */
+    justify-content: center; /* Centers the icon horizontally */
+    font-size: 1.5rem; /* Adjust the font size of the icon */
+    border-radius: 50%; /* Makes the icon background circular */
+}
+
+.info-item div {
+    display: flex;
+    flex-direction: column; /* Ensures the text stacks vertically */
+    justify-content: center; /* Aligns the text vertically */
+}
+
+.info-item a {
+    display: inline-block; /* Ensures the link behaves like regular text */
+    color: inherit; /* Inherits the text color */
+    text-decoration: none; /* Removes underline */
+    line-height: 1.5; /* Matches the line height of other text */
+}
+
+.info-item p {
+    margin: 0; /* Removes any default margin that might cause misalignment */
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+textarea.form-control {
+    height: 150px;
+    resize: none;
+}
+
+.contact .section-title h2 {
+    color: white;
+}
+
+.info-icon {
+    width: 80px; /* Increase the size of the icons */
+    height: 80px; /* Increase the size of the icons */
+    display: flex;
+    align-items: center; /* Centers the icon vertically */
+    justify-content: center; /* Centers the icon horizontally */
+    border-radius: 50%; /* Keeps the circular shape */
+    overflow: hidden; /* Ensures the SVG fits within the circle */
+}
+
+.info-icon img {
+    width: 80%; /* Adjust the size of the SVG inside the circle */
+    height: 80%; /* Maintain aspect ratio */
+}
+
+/* Base button style */
+.contact-form button[type="submit"] {
+    font-size: 1.1rem;
+    padding: 1rem 2rem;
+    background-color: #ff9500;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Privacy Policy section */
+.privacy-policy ul {
+    padding-left: 40px; /* Adjust this value to control the indentation */
+}
+
+.privacy-policy ul li {
+    margin-bottom: 10px; /* Optional: Add spacing between list items */
+}
+
+/* Terms of Service section */
+.terms-of-service ul {
+    padding-left: 40px; /* Adjust this value to control the indentation */
+}
+
+.terms-of-service ul li {
+    margin-bottom: 10px; /* Optional: Add spacing between list items */
+}
+
+/* Benefit item styling for Who We Help section */
+.benefit-item {
+    position: relative;
+    padding: 4px 0;  /* Reduced from 8px to 4px */
+    margin: 2px 0;   /* Reduced from 4px to 2px */
+}
+
+.benefit-item:not(:last-child)::after {
+    content: "•";
+    display: block;
+    text-align: center;
+    color: #3498db;
+    font-size: 12px;  /* Reduced from 14px to 12px */
+    margin: 4px auto 0;  /* Reduced from 8px to 4px */
+}
+
+/* Footer */
+footer {
+    background-color: #001a33;
+    color: white;
+    padding: 3rem 0 1rem;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 3rem;
+    margin-bottom: 2rem;
+}
+
+.footer-col h4 {
+    margin-bottom: 1.5rem;
+    color: #ff9500;
+    font-size: 1.2rem;
+}
+
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: 0.8rem;
+}
+
+.footer-col ul li a {
+    color: #ccc;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-col ul li a:hover {
+    color: white;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.social-links a:hover {
+    background-color: #ff9500;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.5rem;
+    text-align: center;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+    .about-flex {
+        flex-direction: column;
+    }
+    .contact-flex {
+        flex-direction: column;
+    }
+}

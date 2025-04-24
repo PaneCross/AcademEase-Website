@@ -1,61 +1,297 @@
-// Mobile menu toggle
-const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-const navMenu = document.querySelector('nav ul');
-
-mobileMenuBtn.addEventListener('click', () => {
-    toggleMobileMenu();
-    mobileMenuBtn.textContent = navMenu.classList.contains('active') ? '✕' : '☰';
-});
-
-function toggleMobileMenu() {
-    const nav = document.querySelector('nav ul');
-    const html = document.documentElement;
-    nav.classList.toggle('active');
-    html.classList.toggle('mobile-menu-open');
-}
-
-// Testimonials slider
-const testimonialGroup = document.querySelector('.testimonial-group');
-const testimonialsSlider = document.querySelector('.testimonials-slider');
-const testimonials = document.querySelectorAll('.testimonial');
-const prevBtn = document.querySelector('.prev-btn');
-const nextBtn = document.querySelector('.next-btn');
-let currentIndex = 0;
-let autoRotateInterval;
-
-function updateSlider() {
-    testimonialsSlider.style.transform = `translateX(-${currentIndex * 100}%)`;
-}
-
-prevBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex > 0) ? currentIndex - 1 : testimonials.length - 1;
-    updateSlider();
-});
-
-nextBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex < testimonials.length - 1) ? currentIndex + 1 : 0;
-    updateSlider();
-});
-
-function startAutoRotate() {
-    if (autoRotateInterval) {
-        clearInterval(autoRotateInterval);
+// Simplified mobile menu toggle script
+document.addEventListener('DOMContentLoaded', function() {
+    // Create overlay for mobile menu
+    const overlay = document.createElement('div');
+    overlay.className = 'mobile-menu-overlay';
+    document.body.appendChild(overlay);
+    
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navMenu = document.querySelector('nav ul');
+    
+    // Toggle menu when button is clicked
+    if (mobileMenuBtn && navMenu) {
+        mobileMenuBtn.addEventListener('click', function() {
+            // Toggle classes
+            mobileMenuBtn.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+            
+            // Toggle menu icon
+            mobileMenuBtn.innerHTML = navMenu.classList.contains('active') ? '✕' : '☰';
+            
+            // Debug visibility
+            console.log('Menu visible:', navMenu.classList.contains('active'));
+            console.log('Menu style:', window.getComputedStyle(navMenu).left);
+        });
+        
+        // Close menu when overlay is clicked
+        overlay.addEventListener('click', function() {
+            mobileMenuBtn.classList.remove('active');
+            navMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            mobileMenuBtn.innerHTML = '☰';
+        });
+        
+        // Close menu when clicking menu items
+        const menuLinks = navMenu.querySelectorAll('a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileMenuBtn.classList.remove('active');
+                navMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                mobileMenuBtn.innerHTML = '☰';
+            });
+        });
     }
+});
 
-    autoRotateInterval = setInterval(() => {
-        currentIndex = (currentIndex < testimonials.length - 1) ? currentIndex + 1 : 0;
-        updateSlider();
-    }, 5000);
-}
-
-function stopAutoRotate() {
-    if (autoRotateInterval) {
-        clearInterval(autoRotateInterval);
+// Enhanced Who We Help carousel with background image transitions
+function initWhoWeHelpCarousel() {
+  const slider = document.querySelector('.who-we-help-slider');
+  const slides = document.querySelectorAll('.help-item');
+  const prevBtn = document.querySelector('.who-we-help .prev-btn');
+  const nextBtn = document.querySelector('.who-we-help .next-btn');
+  const dotsContainer = document.querySelector('.who-we-help .slide-dots');
+  const bgImages = document.querySelectorAll('.who-we-help-bg-image');
+  
+  if (!slider || slides.length < 1) return;
+  
+  let currentIndex = 0;
+  const slideCount = slides.length;
+  let isAnimating = false;
+  let autoRotateTimeout;
+  
+  // Create dots based on number of slides
+  if (dotsContainer) {
+    dotsContainer.innerHTML = ''; // Clear any existing dots
+    
+    for (let i = 0; i < slides.length; i++) {
+      const dot = document.createElement('button');
+      dot.classList.add('slide-dot');
+      dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+      
+      // Add click event listener to each dot
+      dot.addEventListener('click', () => {
+        stopAutoRotation();
+        goToSlide(i);
+        // Restart auto-rotation after delay
+        setTimeout(startAutoRotation, 5000);
+      });
+      
+      dotsContainer.appendChild(dot);
     }
+  }
+  
+  // Set up initial state - mark first slide as active
+  slides[0].classList.add('active');
+  slides[0].style.opacity = '1';
+  
+  // Initialize the first dot and background as active
+  updateDots();
+  updateBackgrounds();
+  
+  // Update active slide with gradient opacity
+  function updateActiveSlide() {
+    // Calculate opacity for each slide based on its distance from the current slide
+    slides.forEach((slide, index) => {
+      // Reset all slides first
+      slide.classList.remove('active');
+      
+      // Calculate the distance from current slide (accounting for circular nature)
+      const distance = Math.abs(index - currentIndex);
+      const circularDistance = Math.min(distance, slideCount - distance);
+      
+      // Create a gradient opacity based on distance
+      // 1.0 for active slide, decreasing for adjacent slides
+      let opacity;
+      if (circularDistance === 0) {
+        // Active slide
+        opacity = 1;
+        slide.classList.add('active');
+      } else if (circularDistance === 1) {
+        // Direct neighbors
+        opacity = 0.4;
+      } else if (circularDistance === 2) {
+        // Second neighbors
+        opacity = 0.2;
+      } else {
+        // Further slides
+        opacity = 0.1;
+      }
+      
+      // Apply calculated opacity
+      slide.style.opacity = opacity.toString();
+    });
+    
+    // Move slider to position
+    slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+    
+    // Update dots and backgrounds based on current index
+    updateDots();
+    updateBackgrounds();
+  }
+  
+  // Update dot classes
+  function updateDots() {
+    if (!dotsContainer) return;
+    const dots = dotsContainer.querySelectorAll('.slide-dot');
+    
+    dots.forEach((dot, index) => {
+      // For smooth transitions, use a separate animation logic
+      if (index === currentIndex) {
+        // First remove any existing transition for consistent timing
+        dot.style.transition = 'none';
+        // Force reflow to ensure the transition removal takes effect
+        void dot.offsetWidth;
+        // Restore transition with custom timing for expansion
+        dot.style.transition = 'width 0.4s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s ease, transform 0.3s ease';
+        // Apply active classes and styles
+        dot.classList.add('active');
+      } else {
+        // For inactive dots, use a slightly faster transition to contract
+        dot.style.transition = 'width 0.3s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s ease, transform 0.3s ease';
+        dot.classList.remove('active');
+      }
+    });
+  }
+  
+  // Update background images
+  function updateBackgrounds() {
+    if (!bgImages || bgImages.length === 0) return;
+    
+    bgImages.forEach((bg, index) => {
+      if (index === currentIndex) {
+        bg.classList.add('active');
+      } else {
+        bg.classList.remove('active');
+      }
+    });
+  }
+  
+  // Go to specific slide
+  function goToSlide(index) {
+    if (isAnimating) return;
+    isAnimating = true;
+    
+    currentIndex = index;
+    updateActiveSlide();
+    
+    // Reset animation lock after transition completes
+    setTimeout(() => {
+      isAnimating = false;
+    }, 600); // Slightly longer than transition time
+  }
+  
+  // Move to next slide with smooth transition
+  function goToNext() {
+    if (isAnimating) return;
+    isAnimating = true;
+    
+    currentIndex = (currentIndex + 1) % slideCount;
+    updateActiveSlide();
+    
+    // Reset animation lock after transition completes
+    setTimeout(() => {
+      isAnimating = false;
+    }, 600); // Slightly longer than transition time
+  }
+  
+  // Move to previous slide with smooth transition
+  function goToPrev() {
+    if (isAnimating) return;
+    isAnimating = true;
+    
+    currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+    updateActiveSlide();
+    
+    // Reset animation lock after transition completes
+    setTimeout(() => {
+      isAnimating = false;
+    }, 600); // Slightly longer than transition time
+  }
+  
+  // Start auto-rotation with stable timing
+  function startAutoRotation() {
+    // Clear any existing timeout first
+    stopAutoRotation();
+    
+    // Set new timeout
+    autoRotateTimeout = setTimeout(() => {
+      goToNext();
+      startAutoRotation(); // Schedule next rotation only after current one completes
+    }, 5000); // Change slides every 5 seconds
+  }
+  
+  // Stop auto-rotation
+  function stopAutoRotation() {
+    if (autoRotateTimeout) {
+      clearTimeout(autoRotateTimeout);
+      autoRotateTimeout = null;
+    }
+  }
+  
+  // Add event listeners
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      stopAutoRotation();
+      goToPrev();
+      // Restart auto-rotation after delay
+      setTimeout(startAutoRotation, 5000);
+    });
+  }
+  
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      stopAutoRotation();
+      goToNext();
+      // Restart auto-rotation after delay
+      setTimeout(startAutoRotation, 5000);
+    });
+  }
+  
+  // Handle visibility change (tab switching)
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopAutoRotation();
+    } else {
+      startAutoRotation();
+    }
+  });
+  
+  // Handle mouse interaction
+  slider.addEventListener('mouseenter', stopAutoRotation);
+  slider.addEventListener('mouseleave', startAutoRotation);
+  
+  // Touch events for mobile
+  let touchStartX = 0;
+  let touchEndX = 0;
+  
+  slider.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    stopAutoRotation();
+  }, {passive: true});
+  
+  slider.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+    // Restart auto-rotation after touch
+    setTimeout(startAutoRotation, 5000);
+  }, {passive: true});
+  
+  function handleSwipe() {
+    const swipeThreshold = 50;
+    if (touchEndX < touchStartX - swipeThreshold) {
+      // Swipe left
+      goToNext();
+    } else if (touchEndX > touchStartX + swipeThreshold) {
+      // Swipe right
+      goToPrev();
+    }
+  }
+  
+  // Start auto-rotation
+  startAutoRotation();
 }
-
-testimonialGroup.addEventListener('mouseenter', stopAutoRotate);
-testimonialGroup.addEventListener('mouseleave', startAutoRotate);
 
 // Contact form submission handler
 const contactForm = document.getElementById('contactForm');
@@ -101,9 +337,6 @@ fleetCards.forEach(card => {
         card.classList.add('expanded');
     });
 });
-
-// Start auto-rotation initially
-startAutoRotate();
 
 // Showcase and fleet tiles rotation
 document.addEventListener('DOMContentLoaded', () => {
@@ -273,7 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function scrollToExpandedTile(tile) {
         const header = document.querySelector('#header');
         const headerHeight = header ? header.offsetHeight : 0;
-        const padding = 20;
+        const padding = 0; // Changed from undefined/0 to 0 explicitly
         const tilePosition = tile.getBoundingClientRect().top + window.pageYOffset - headerHeight - padding;
         
         window.scrollTo({
@@ -343,12 +576,14 @@ document.addEventListener('DOMContentLoaded', () => {
 function scrollToElement(selector) {
     const targetElement = document.querySelector(selector);
     if (targetElement) {
-        // Get header height before any transitions
+        // Get a more accurate header height
         const header = document.querySelector('#header');
         const headerHeight = header ? header.offsetHeight : 0;
-        const padding = 20;
+        
+        // Remove the extra padding that's causing the gap
+        const padding = 0; // Changed from 20 to 0
 
-        // Use getBoundingClientRect() after ensuring element is in view
+        // Calculate position more accurately
         const elementPosition = targetElement.getBoundingClientRect().top;
         const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
         const offsetPosition = elementPosition + currentScroll - headerHeight - padding;
@@ -392,9 +627,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const navMenu = document.querySelector('nav ul');
             const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
             navMenu.classList.remove('active');
-            mobileMenuBtn.textContent = '☰';
+            mobileMenuBtn.innerHTML = '<span>☰</span>';
         });
     });
+    
+    // Initialize Who We Help carousel (now includes dots)
+    initWhoWeHelpCarousel();
 });
 
 // Update the navigation handler
@@ -418,4 +656,83 @@ function handleNavigation(event, link) {
         event.preventDefault();
         scrollToElement(href);
     }
+}
+
+// Improved service cards animation on mobile with better viewport timing
+document.addEventListener('DOMContentLoaded', () => {
+    // Only run on mobile devices
+    if (window.matchMedia('(max-width: 768px)').matches) {
+        const serviceCards = document.querySelectorAll('.service-card');
+        const header = document.querySelector('#header');
+        const headerHeight = header ? header.offsetHeight : 0;
+        
+        // Create intersection observer for service cards with adjusted thresholds
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                // Add class when card is in view, remove when out of view
+                // Use a lower threshold to trigger animations earlier
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                } else {
+                    // Keep animation active longer when scrolling out
+                    // We'll check if it's at least partially visible
+                    if (entry.intersectionRatio > 0) {
+                        entry.target.classList.add('in-view');
+                    } else {
+                        entry.target.classList.remove('in-view');
+                    }
+                }
+            });
+        }, {
+            // Adjust root margin to account for header and extend detection zone
+            // Negative values at top for header, positive at bottom to detect earlier
+            rootMargin: `-${headerHeight}px 0px 20% 0px`,
+            threshold: [0, 0.1, 0.2]  // Multiple thresholds for smoother detection
+        });
+        
+        // Observe each service card
+        serviceCards.forEach(card => {
+            cardObserver.observe(card);
+        });
+        
+        // Cleanup when window resizes above mobile breakpoint
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                serviceCards.forEach(card => {
+                    cardObserver.unobserve(card);
+                    card.classList.remove('in-view');
+                });
+            }
+        });
+    }
+});
+
+// Modal functionality - updated with scroll position preservation
+let scrollPosition = 0;
+
+function openModal() {
+    // Store current scroll position before locking
+    scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // Apply modal open class
+    document.querySelector('.modal').classList.add('active');
+    document.body.classList.add('modal-open');
+    
+    // Set the scroll position as a negative top margin to preserve position
+    document.body.style.top = `-${scrollPosition}px`;
+}
+
+function closeModal() {
+    // Remove modal classes
+    document.querySelector('.modal').classList.remove('active');
+    document.body.classList.remove('modal-open');
+    
+    // Reset the body style
+    document.body.style.top = '';
+    
+    // Restore scroll position
+    window.scrollTo({
+        top: scrollPosition,
+        behavior: 'instant' // Use instant to avoid animation
+    });
 }

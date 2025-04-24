@@ -1,16 +1,17 @@
 const fetch = require('node-fetch');
 const logger = require('./utils/logger');
 
+// Set console to silent mode to prevent popup windows
+process.env.SILENT_CONSOLE = 'true';
+
 async function checkHealth() {
     const BASE_URL = 'https://academease-contact-dherfjbsb7csh7c6.westus-01.azurewebsites.net';
     const timestamp = new Date().toISOString();
 
     try {
-        // Check base endpoint
         const healthCheck = await fetch(BASE_URL);
         const healthData = await healthCheck.json();
 
-        // Check email endpoint availability
         const emailCheck = await fetch(`${BASE_URL}/api/send-email`, {
             method: 'OPTIONS'
         });
@@ -23,9 +24,7 @@ async function checkHealth() {
             timestamp
         };
 
-        if (healthCheck.ok && emailCheck.ok) {
-            logger.info('Health check successful', status);
-        } else {
+        if (!healthCheck.ok || !emailCheck.ok) {
             logger.warn('Partial system degradation', status);
         }
 
@@ -77,17 +76,13 @@ async function runHealthCheck() {
     const status = await checkHealth();
     if (status && status.baseEndpoint) {
         healthMetrics.successCount++;
-        // Silent success - no logging
+        // Silent success - no logging needed
     } else {
         healthMetrics.failureCount++;
         healthMetrics.lastFailure = new Date().toISOString();
-        logger.error('Health check failed', {
-            metrics: healthMetrics,
-            timestamp: new Date().toISOString()
-        });
         
-        // Log to console only on failures
-        console.error('❌ Health check failed:', {
+        // Log to file instead of console to prevent popups
+        logger.error('Health check failed:', {
             failureCount: healthMetrics.failureCount,
             lastFailure: healthMetrics.lastFailure,
             status
@@ -102,7 +97,7 @@ checkTimer = setInterval(runHealthCheck, config.currentInterval);
 
 // Initial check - silent
 runHealthCheck().catch(error => {
-    console.error('Initial health check failed:', error);
+    logger.error('Initial health check failed:', error);
 });
 
 // Export metrics for external monitoring
