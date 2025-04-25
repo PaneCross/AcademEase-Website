@@ -322,7 +322,6 @@ if (contactForm) {
         e.preventDefault();
         statusMessage.style.display = 'block';
         statusMessage.style.color = '#28a745';
-        statusMessage.textContent = 'Thank you for your request! We will contact you shortly.';
         setTimeout(() => {
             newContactForm.reset();
         }, 100);
