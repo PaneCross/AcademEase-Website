@@ -8,6 +8,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const navMenu = document.querySelector('nav ul');
     
+    // Video background playback speed control
+    const videoBackground = document.querySelector('.video-background');
+    if (videoBackground) {
+        videoBackground.playbackRate = 0.65; // Set playback speed to 0.65x
+        
+        // Ensure video loops properly if it ends
+        videoBackground.addEventListener('ended', function() {
+            this.play();
+        });
+    }
+    
     // Toggle menu when button is clicked
     if (mobileMenuBtn && navMenu) {
         mobileMenuBtn.addEventListener('click', function() {

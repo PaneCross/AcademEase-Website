@@ -86,59 +86,96 @@ nav ul li a:focus {
 header {
     /* Base gradient background */
     background: linear-gradient(to right, #CCE5FF, #0066CC);
-    position: sticky;
+    position: sticky !important; /* Force sticky positioning */
     top: 0;
     z-index: 1000;
     display: flex;
     flex-direction: column; /* Stack logo and nav bar vertically */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Prevent video from spilling outside header */
+    /* Remove duplicate position property */
 }
 
-/* Create a pseudo-element for the clouds with controlled opacity */
+/* Fix the conflicting mobile header style that's overriding sticky positioning */
+@media (max-width: 768px) {
+    /* Mobile header adjustments */
+    header {
+        position: sticky !important; /* Override the fixed position in mobile view */
+        width: 100%;
+        z-index: 1000;
+        /* Remove conflicting styles but keep mobile-specific styling */
+        padding: 0; /* Remove padding to match desktop */
+        display: flex;
+        flex-direction: column; /* Match desktop layout */
+        border-bottom: 25px solid #201B4F; /* Keep mobile border */
+    }
+    
+    /* Remove the mobile body padding that was compensating for fixed header */
+    body {
+        padding-top: 0; /* Remove padding since header is sticky now */
+    }
+}
+
+/* Navigation bar */
+.nav-bar {
+    background-color: #201B4F; /* Dark blue background */
+    display: flex;
+    justify-content: flex-end; /* Align navigation to the right */
+    padding: 0 20px;
+    height: 35px; /* Fixed height for nav bar */
+}
+
+/* Logo container styling */
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 20px;
+    height: 70px;  /* Fixed height for logo section */
+}
+
+/* Remove the previous pseudo-element with clouds */
 header::before {
-    content: '';
+    display: none;
+}
+
+/* Add video element styling */
+header .video-background {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../images/clouds.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0.35; /* Set the clouds image to 35% opacity */
+    object-fit: cover; /* Cover the entire area */
+    opacity: 0.35; /* Set the video to 35% opacity */
     z-index: -1; /* Place it behind the header content */
     pointer-events: none; /* Make sure it doesn't interfere with interactions */
 }
 
-/* Redundant, can be removed */
-#header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+/* Fallback for browsers that don't support video */
+@supports not (video in header) {
+    header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('../images/clouds.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.35;
+        z-index: -1;
+        pointer-events: none;
+    }
 }
 
-/* Header container layout for logo section */
-.nav-container {
-    max-width: 1500px;
-    height: 80px; /* Set a fixed height for the header */
-    padding-left: 2vw; /* Add some padding on the left */
-    display: flex;
-    justify-content: flex-start; /* Align logo to the left */
-    align-items: center;
-    width: 100%;
-}
-
-/* Add navigation bar at the bottom of the header */
-.nav-bar {
-    background-color: #201B4F; /* Same as the previous border color */
-    width: 100%;
-    height: 35px;
-    margin-top: auto; /* Push to bottom of header */
-    display: flex;
-    justify-content: flex-end; /* Changed from center to flex-end to push content right */
-    align-items: center;
-    padding-right: 2rem; /* Add some padding on the right */
+/* Mobile adjustments for video background */
+@media (max-width: 768px) {
+    header .video-background {
+        opacity: 0.35;
+    }
 }
 
 /* Logo container with added support for tagline */
@@ -1468,7 +1505,7 @@ a:active, button:active, .service-card:active, .tech-tile:active, .about-image i
     padding: 0; /* Remove padding */
     margin: 0 10px; /* Add horizontal spacing */
     user-select: none; /* Prevent text selection */
-    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8), 0 0 5px rgba(255, 255, 255, 0.8); /* Add white glow */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 0 5px rgba(0, 0, 0, 0.15); /* Add white glow */
     font-weight: 700; /* Make arrows bolder */
     line-height: 1;
     opacity: 0.9;
@@ -1594,8 +1631,6 @@ a:active, button:active, .service-card:active, .tech-tile:active, .about-image i
   justify-content: center;
   align-items: center;
   margin-top: 2rem;
-  position: relative;
-  z-index: 5;
 }
 
 /* Shared styles for slider controls */
@@ -1660,19 +1695,19 @@ a:active, button:active, .service-card:active, .tech-tile:active, .about-image i
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
-    .who-we-help .slide-dots {
-        gap: 0.6rem;
-        min-width: 100px;
-    }
-    
-    .who-we-help .slide-dot {
-        width: 10px;
-        height: 10px;
-    }
-    
-    .who-we-help .slide-dot.active {
-        width: 20px; /* Slightly smaller on mobile */
-    }
+  .who-we-help .slide-dots {
+    gap: 0.6rem;
+    min-width: 100px;
+  }
+  
+  .who-we-help .slide-dot {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .who-we-help .slide-dot.active {
+    width: 20px; /* Slightly smaller on mobile */
+  }
 }
 
 /* Update the slider controls to include dots in between */
@@ -2306,7 +2341,7 @@ footer {
     justify-content: center;
     width: 40px;
     height: 40px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 255, 0.1);
     border-radius: 50%;
     color: white;
     text-decoration: none;
