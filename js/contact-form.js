@@ -37,14 +37,14 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             console.log('Sending form data:', formData);
             
-            const response = await fetch('https://academease-contact.azurewebsites.net/api/send-email', {
+            const response = await fetch('https://academease-contact-dherfjbsb7csh7c6.westus-01.azurewebsites.net/api/send-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
             });
-
+            
             const responseData = await response.json();
             console.log('Server response:', responseData);
 
