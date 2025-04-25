@@ -679,7 +679,7 @@ nav {
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed; /* This prevents the background from scrolling */
-    height: calc(100vh - 115px); /* Full viewport height minus the header (80px logo + 35px nav) */
+    height: calc(100vh - 105px); /* Full viewport height minus the header */
     display: flex;
     align-items: center;
     justify-content: center; /* Center content horizontally */
