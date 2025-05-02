@@ -331,21 +331,150 @@ if (contactForm) {
     const newContactForm = contactForm.cloneNode(true);
     contactForm.parentNode.replaceChild(newContactForm, contactForm);
 
+    // Set character limits on all input fields
+    const nameInput = newContactForm.querySelector('[name="name"]');
+    const emailInput = newContactForm.querySelector('[name="email"]');
+    const phoneInput = newContactForm.querySelector('[name="phone"]');
+    const messageInput = newContactForm.querySelector('[name="message"]');
+    
+    // Apply max lengths if elements exist
+    if (nameInput) nameInput.maxLength = 50;
+    if (emailInput) emailInput.maxLength = 100;
+    if (phoneInput) phoneInput.maxLength = 20;
+    if (messageInput) messageInput.maxLength = 1000; // Strict limit on message size
+    
+    // Add honeypot field for bot detection
+    const honeypotField = document.createElement('div');
+    honeypotField.innerHTML = `<input type="text" name="website" style="opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1;" tabindex="-1" autocomplete="off">`;
+    newContactForm.appendChild(honeypotField);
+
     // Add status message div after the form
     const statusMessage = document.createElement('div');
     statusMessage.className = 'form-status';
     statusMessage.style.cssText = 'margin-top: 1rem; padding: 1rem; display: none;';
     newContactForm.parentNode.insertBefore(statusMessage, newContactForm.nextSibling);
 
-    // Add the new event listener
+    // Track submission counts and timing
+    const getSubmissionData = () => {
+        const data = localStorage.getItem('formSubmissions');
+        return data ? JSON.parse(data) : { count: 0, lastSubmit: 0 };
+    };
+    
+    const updateSubmissionData = () => {
+        const data = getSubmissionData();
+        data.count += 1;
+        data.lastSubmit = Date.now();
+        localStorage.setItem('formSubmissions', JSON.stringify(data));
+    };
+
+    // Add the new event listener with enhanced protection
     newContactForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        
+        // 1. Check honeypot field (bots will fill this, humans won't)
+        const honeypot = newContactForm.querySelector('[name="website"]');
+        if (honeypot && honeypot.value) {
+            console.log("Bot submission detected");
+            statusMessage.style.display = 'block';
+            statusMessage.textContent = 'Thank you for your message!';
+            statusMessage.style.color = '#28a745'; // Show success to bot but don't process
+            return false;
+        }
+        
+        // 2. Implement rate limiting
+        const submissions = getSubmissionData();
+        const timeSinceLastSubmit = Date.now() - submissions.lastSubmit;
+        const COOLDOWN_PERIOD = 60000; // 1 minute cooldown
+        const MAX_SUBMISSIONS = 5; // Max 5 submissions per session
+        
+        if (submissions.count >= MAX_SUBMISSIONS) {
+            statusMessage.style.display = 'block';
+            statusMessage.textContent = 'Maximum submission limit reached. Please try again later.';
+            statusMessage.style.color = '#dc3545'; // Red error color
+            return false;
+        }
+        
+        if (timeSinceLastSubmit < COOLDOWN_PERIOD && submissions.lastSubmit !== 0) {
+            const waitTime = Math.ceil((COOLDOWN_PERIOD - timeSinceLastSubmit) / 1000);
+            statusMessage.style.display = 'block';
+            statusMessage.textContent = `Please wait ${waitTime} seconds before submitting again.`;
+            statusMessage.style.color = '#dc3545'; // Red error color
+            return false;
+        }
+        
+        // 3. Validate content
+        const isValidEmail = (email) => {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        };
+        
+        if (emailInput && !isValidEmail(emailInput.value.trim())) {
+            statusMessage.style.display = 'block';
+            statusMessage.textContent = 'Please enter a valid email address.';
+            statusMessage.style.color = '#dc3545'; // Red error color
+            return false;
+        }
+        
+        // Check for empty name
+        if (nameInput && nameInput.value.trim() === '') {
+            statusMessage.style.display = 'block';
+            statusMessage.textContent = 'Please enter your name.';
+            statusMessage.style.color = '#dc3545';
+            return false;
+        }
+        
+        // Check for empty message or too short
+        if (messageInput && messageInput.value.trim().length < 10) {
+            statusMessage.style.display = 'block';
+            statusMessage.textContent = 'Please enter a message (minimum 10 characters).';
+            statusMessage.style.color = '#dc3545';
+            return false;
+        }
+        
+        // 4. Brief delay check (bots often submit instantly)
+        const formRenderedAt = newContactForm.dataset.rendered || Date.now();
+        const timeSpentOnForm = Date.now() - formRenderedAt;
+        if (timeSpentOnForm < 1500) { // If submitted in less than 1.5 seconds
+            console.log("Suspiciously fast submission");
+            setTimeout(() => {
+                processFormSubmission();
+            }, 1500 - timeSpentOnForm); // Delay to make it seem natural
+            return false;
+        }
+        
+        // Process legitimate submission
+        processFormSubmission();
+    });
+    
+    // Set the rendered timestamp
+    newContactForm.dataset.rendered = Date.now();
+    
+    function processFormSubmission() {
+        // Disable submit button to prevent double submission
+        const submitButton = newContactForm.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = true;
+        }
+        
+        // Update submission tracking
+        updateSubmissionData();
+        
+        // Show success message
         statusMessage.style.display = 'block';
+        statusMessage.textContent = 'Thank you for your message! We will respond shortly.';
         statusMessage.style.color = '#28a745';
+        
+        // Reset form after successful submission
         setTimeout(() => {
             newContactForm.reset();
-        }, 100);
-    });
+            if (submitButton) {
+                submitButton.disabled = false;
+            }
+        }, 2000);
+        
+        // Here you would normally send the form data to your server
+        // But we're just showing the success message for now
+    }
 }
 
 // Fleet section interactive cards
