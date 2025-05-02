@@ -118,7 +118,7 @@ app.post('/api/send-email', async (req, res) => {
             .api('/users/tj@acdmease.com/sendMail')
             .post(mailBody);
 
-        logger.info(`Email sent successfully to: tj@acdmease.com`);
+        logger.info(`Email sent successfully to multiple recipients`);
         res.json({ 
             success: true, 
             message: 'Email sent successfully',
