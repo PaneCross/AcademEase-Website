@@ -13,6 +13,26 @@ document.addEventListener('DOMContentLoaded', function() {
     if (videoBackground) {
         videoBackground.playbackRate = 0.65; // Set playback speed to 0.65x
         
+        // Optimize video for better performance
+        videoBackground.playsInline = true;
+        
+        // Use requestAnimationFrame for smoother playback
+        let rafId;
+        const smoothPlayback = () => {
+            if (videoBackground.paused) {
+                videoBackground.play().catch(() => {});
+            }
+            rafId = requestAnimationFrame(smoothPlayback);
+        };
+        
+        videoBackground.addEventListener('play', () => {
+            rafId = requestAnimationFrame(smoothPlayback);
+        });
+        
+        videoBackground.addEventListener('pause', () => {
+            cancelAnimationFrame(rafId);
+        });
+        
         // Ensure video loops properly if it ends
         videoBackground.addEventListener('ended', function() {
             this.play();
@@ -643,6 +663,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize Who We Help carousel (now includes dots)
     initWhoWeHelpCarousel();
+    
+    // Fix for Safari background stuttering issues
+    applySafariBackgroundFixes();
+    
+    // Apply browser optimizations
+    applyBrowserOptimizations();
 });
 
 // Update the navigation handler
@@ -745,4 +771,168 @@ function closeModal() {
         top: scrollPosition,
         behavior: 'instant' // Use instant to avoid animation
     });
+}
+
+// Fix for Safari background stuttering issues
+function applySafariBackgroundFixes() {
+    // Detect iOS or Safari
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    
+    if (isSafari || isIOS) {
+        // Apply specific styles for Safari/iOS
+        const styleEl = document.createElement('style');
+        styleEl.textContent = `
+            /* Safari/iOS specific fixes for background stuttering */
+            .hero, .tech, .who-we-help {
+                background-attachment: scroll !important;
+            }
+            
+            /* Use transform for hardware acceleration */
+            .hero, .tech, .who-we-help {
+                transform: translate3d(0, 0, 0);
+                -webkit-transform: translate3d(0, 0, 0);
+                backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
+            }
+            
+            /* Improve video background performance */
+            .video-background {
+                transform: translate3d(0, 0, 0);
+                -webkit-transform: translate3d(0, 0, 0);
+            }
+        `;
+        document.head.appendChild(styleEl);
+        
+        // Add a class to body for potential CSS targeting
+        document.body.classList.add('safari-browser');
+    }
+}
+
+// Enhanced cross-browser compatibility and performance optimizations
+function applyBrowserOptimizations() {
+    // 1. Detect browsers and platforms
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isFirefox = navigator.userAgent.indexOf("Firefox") > -1;
+    const isEdge = navigator.userAgent.indexOf("Edg") > -1;
+    const isOldEdge = navigator.userAgent.indexOf("Edge") > -1;
+    const isIE = /*@cc_on!@*/false || !!document.documentMode;
+    
+    // 2. Apply browser-specific classes to the body for CSS targeting
+    const html = document.documentElement;
+    const body = document.body;
+    
+    if (isSafari || isIOS) body.classList.add('safari-browser');
+    if (isFirefox) body.classList.add('firefox-browser');
+    if (isEdge) body.classList.add('edge-browser');
+    if (isOldEdge) body.classList.add('old-edge-browser');
+    if (isIE) body.classList.add('ie-browser');
+    
+    // 3. Create browser-specific styles
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `
+        /* Common performance optimizations for all browsers */
+        .hero, .tech, .who-we-help, .video-background, .showcase-item, .fleet-tile, .tech-tile {
+            will-change: opacity, transform;
+            contain: content;
+        }
+        
+        /* Safari/iOS specific fixes */
+        .safari-browser .hero, 
+        .safari-browser .tech, 
+        .safari-browser .who-we-help {
+            background-attachment: scroll !important;
+            transform: translate3d(0, 0, 0);
+            -webkit-transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        
+        /* Firefox-specific fixes */
+        .firefox-browser .hero,
+        .firefox-browser .tech,
+        .firefox-browser .who-we-help {
+            background-attachment: fixed;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+        }
+        
+        /* Edge/IE fixes */
+        .edge-browser .video-background,
+        .old-edge-browser .video-background,
+        .ie-browser .video-background {
+            object-fit: cover;
+            font-family: 'object-fit: cover';
+        }
+    `;
+    document.head.appendChild(styleEl);
+    
+    // 4. Detect low performance devices
+    const isLowEndDevice = () => {
+        // Check for low memory (approximation)
+        if (navigator.deviceMemory && navigator.deviceMemory < 4) return true;
+        
+        // Check for slow CPU (approximation)
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) return true;
+        
+        return false;
+    };
+    
+    // 5. Apply optimizations for low-end devices
+    if (isLowEndDevice()) {
+        body.classList.add('low-end-device');
+        
+        // Reduce animation complexity for low-end devices
+        const additionalStyles = document.createElement('style');
+        additionalStyles.textContent = `
+            .low-end-device * {
+                transition-duration: 0.1s !important;
+                animation-duration: 0.1s !important;
+            }
+            
+            .low-end-device .video-background {
+                display: none;
+            }
+            
+            .low-end-device .hero {
+                background-attachment: scroll !important;
+            }
+        `;
+        document.head.appendChild(additionalStyles);
+    }
+    
+    // 6. Apply throttling to high-frequency events
+    function throttle(func, limit) {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        };
+    }
+    
+    // Apply throttled resize handler
+    const originalResizeHandlers = window.onresize;
+    window.onresize = throttle(function(e) {
+        if (typeof originalResizeHandlers === 'function') {
+            originalResizeHandlers(e);
+        }
+    }, 100);
+    
+    // 7. Optimize image loading
+    if ('loading' in HTMLImageElement.prototype) {
+        // Use native lazy loading if available
+        document.querySelectorAll('img').forEach(img => {
+            if (!img.loading && !img.classList.contains('critical')) {
+                img.loading = 'lazy';
+            }
+        });
+    }
 }
