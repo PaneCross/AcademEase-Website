@@ -107,7 +107,7 @@ app.post('/api/send-email', async (req, res) => {
                     `
                 },
                 toRecipients: [
-                    { emailAddress: { address: 'tj@acdmease.com' } }
+                    { emailAddress: { address: 'tj@acdmease.com' } },
                     { emailAddress: { address: 'eduardo@acdmease.com' } },
                     { emailAddress: { address: 'charles@acdmease.com' } }
                 ]
