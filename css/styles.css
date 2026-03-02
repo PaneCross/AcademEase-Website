@@ -30,7 +30,7 @@
   --font-body: 'Aptos', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-heading: 'Aptos', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
-  --header-height: 72px;
+  --header-height: 84px;
   --border-radius: 12px;
   --border-radius-lg: 20px;
   --transition: 0.25s ease;
@@ -244,7 +244,7 @@ p {
 }
 
 .site-logo img {
-  height: 44px;
+  height: 60px;
   width: auto;
 }
 
@@ -1171,6 +1171,7 @@ p {
 .form-success-icon {
   font-size: 2.5rem;
   margin-bottom: 12px;
+  color: #48BB78;
 }
 
 .form-success h4 {
@@ -1719,7 +1720,7 @@ p {
    ============================================================ */
 @media (max-width: 768px) {
   :root {
-    --header-height: 64px;
+    --header-height: 72px;
   }
 
   .section {
