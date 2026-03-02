@@ -244,8 +244,32 @@ p {
 }
 
 .site-logo img {
-  height: 80px;
+  height: 60px;
   width: auto;
+  flex-shrink: 0;
+}
+
+.site-logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.site-logo-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--oxford-blue);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.site-logo-tagline {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--medium-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1;
 }
 
 .site-nav {
@@ -376,7 +400,8 @@ p {
 .hero {
   position: relative;
   background: linear-gradient(135deg, var(--oxford-blue) 0%, var(--prussian-blue) 50%, var(--indigo-dye) 100%);
-  min-height: calc(100vh - var(--header-height));
+  min-height: 100vh;
+  padding-top: var(--header-height);
   display: flex;
   align-items: center;
   overflow: hidden;
