@@ -1,3477 +1,1899 @@
-/* Reset and base styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    -webkit-tap-highlight-color: transparent; /* Remove tap highlight color on mobile */
-    -webkit-touch-callout: none; /* Disable callout on long press */
-    user-select: none; /* Prevent text selection on mobile taps */
-    outline-color: transparent; /* Remove outline on focus */
+/* ============================================================
+   AcademEase Website Styles
+   Brand Colors:
+     Oxford Blue:    #011B2F
+     Prussian Blue:  #002A45
+     Indigo Dye:     #003F66
+     Mustard:        #FFD358
+     Selective Yellow:#FFB915
+   Typography: Aptos (Google Fonts fallback: Inter, system-ui)
+   ============================================================ */
+
+/* --- Google Fonts Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* --- CSS Variables --- */
+:root {
+  --oxford-blue:      #011B2F;
+  --prussian-blue:    #002A45;
+  --indigo-dye:       #003F66;
+  --mustard:          #FFD358;
+  --selective-yellow: #FFB915;
+  --white:            #FFFFFF;
+  --off-white:        #F8F9FA;
+  --light-gray:       #F0F2F5;
+  --medium-gray:      #6B7280;
+  --dark-text:        #1A1A2E;
+  --yellow-tint:      #FFFBEE;
+  --blue-tint:        #EBF4FF;
+
+  --font-body: 'Aptos', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Aptos', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  --header-height: 72px;
+  --border-radius: 12px;
+  --border-radius-lg: 20px;
+  --transition: 0.25s ease;
+  --shadow-sm: 0 2px 8px rgba(1, 27, 47, 0.08);
+  --shadow-md: 0 4px 20px rgba(1, 27, 47, 0.12);
+  --shadow-lg: 0 8px 40px rgba(1, 27, 47, 0.16);
+}
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
-    /* Calculate the exact header height: 70px (logo) + 35px (nav bar) = 105px */
-    scroll-padding-top: 105px; 
-    /* Prevent layout shift when modal opens by always showing scrollbar */
-    overflow-y: scroll;
+  scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
-    line-height: 1.6;
-    color: #333;
-    /* Keep body positioned normally by default */
-    width: 100%;
-    position: relative;
+  font-family: var(--font-body);
+  color: var(--dark-text);
+  background: var(--white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Separate modal-open class for body instead of nesting with &. */
-body.modal-open {
-    overflow: hidden;
-    /* Use position: fixed with preserved scroll position */
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    /* This keeps the content from jumping when switching to fixed */
-    top: 0;
-    left: 0;
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
-/* Add focus styles for accessibility that don't use the default blue outline */
-a:focus, button:focus, input:focus, textarea:focus, select:focus, [tabindex]:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(0, 98, 204, 0.5);
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition);
 }
 
-/* Remove blue outline/border on click for all interactive elements */
-button, a, input, select, textarea, [tabindex], .service-card, .tech-tile, .about-image img, .nav-bar li {
-    outline: none !important; /* Remove default outline */
-    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
-    -webkit-appearance: none; /* Remove default styling */
-    -moz-appearance: none;
-    appearance: none;
+ul {
+  list-style: none;
 }
 
-/* Provide custom focus styles for keyboard navigation (accessibility) */
-button:focus-visible, 
-a:focus-visible, 
-input:focus-visible, 
-select:focus-visible, 
-textarea:focus-visible, 
-[tabindex]:focus-visible {
-    outline: 2px solid rgba(0, 98, 204, 0.5) !important;
-    outline-offset: 2px;
-    box-shadow: none;
+/* --- Typography Scale --- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--oxford-blue);
 }
 
-/* Override any existing focus styles that might conflict */
-a:focus, button:focus, input:focus, textarea:focus, select:focus, [tabindex]:focus {
-    outline: none;
-    box-shadow: none;
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+h2 { font-size: clamp(1.6rem, 3.5vw, 2.5rem); }
+h3 { font-size: clamp(1.2rem, 2.5vw, 1.6rem); }
+h4 { font-size: 1.15rem; }
+
+p {
+  font-size: 1rem;
+  color: var(--medium-gray);
+  line-height: 1.75;
 }
 
-/* Ensure nav menu items don't show outline */
-nav ul li a:focus {
-    outline: none;
-    box-shadow: none;
+.lead {
+  font-size: 1.125rem;
+  color: var(--prussian-blue);
+  line-height: 1.7;
 }
 
-/* Make sure mobile menu button doesn't show outline */
-.mobile-menu-btn:focus {
-    outline: none;
-    box-shadow: none;
+/* --- Layout Utilities --- */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
-/* Desktop header with two-section layout */
-header {
-    /* Base gradient background */
-    background: linear-gradient(to right, #CCE5FF, #0066CC);
-    position: sticky !important; /* Force sticky positioning */
-    top: 0;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column; /* Stack logo and nav bar vertically */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden; /* Prevent video from spilling outside header */
-    /* Remove duplicate position property */
+.section {
+  padding: 80px 0;
 }
 
-/* Fix the conflicting mobile header style that's overriding sticky positioning */
-@media (max-width: 768px) {
-    /* Mobile header adjustments */
-    header {
-        position: sticky !important; /* Override the fixed position in mobile view */
-        width: 100%;
-        z-index: 1000;
-        /* Remove conflicting styles but keep mobile-specific styling */
-        padding: 0; /* Remove padding to match desktop */
-        display: flex;
-        flex-direction: column; /* Match desktop layout */
-        border-bottom: 25px solid #201B4F; /* Keep mobile border */
-    }
-    
-    /* Remove the mobile body padding that was compensating for fixed header */
-    body {
-        padding-top: 0; /* Remove padding since header is sticky now */
-    }
+.section-sm {
+  padding: 56px 0;
 }
 
-/* Navigation bar */
-.nav-bar {
-    background-color: #201B4F; /* Dark blue background */
-    display: flex;
-    justify-content: flex-end; /* Align navigation to the right */
-    padding: 0 20px;
-    height: 35px; /* Fixed height for nav bar */
+.section-header {
+  text-align: center;
+  margin-bottom: 56px;
 }
 
-/* Logo container styling */
-.nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 20px;
-    height: 70px;  /* Fixed height for logo section */
+.section-header h2 {
+  margin-bottom: 16px;
 }
 
-/* Remove the previous pseudo-element with clouds */
-header::before {
-    display: none;
+.section-header p {
+  max-width: 640px;
+  margin: 0 auto;
+  font-size: 1.05rem;
 }
 
-/* Add video element styling */
-header .video-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Cover the entire area */
-    opacity: 0.35; /* Set the video to 35% opacity */
-    z-index: -1; /* Place it behind the header content */
-    pointer-events: none; /* Make sure it doesn't interfere with interactions */
+.section-label {
+  display: inline-block;
+  background: var(--mustard);
+  color: var(--oxford-blue);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 16px;
 }
 
-/* Mobile adjustments for video background */
-@media (max-width: 768px) {
-    header .video-background {
-        opacity: 0.35;
-    }
+/* On yellow/light backgrounds, use blue label */
+.bg-yellow .section-label,
+.bg-yellow-tint .section-label {
+  background: var(--prussian-blue);
+  color: var(--white);
 }
 
-/* Logo container with added support for tagline */
-.logo {
-    display: flex;
-    align-items: center;
-    height: 60px;
-    flex-shrink: 0; /* Prevent logo from shrinking */
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all var(--transition);
+  text-decoration: none;
+  line-height: 1;
 }
 
-/* Logo text container to house both the name and tagline */
-.logo-text-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-left: 0.8rem;
-    height: 100%;
-    justify-content: center; /* Center vertically */
+.btn-primary {
+  background: var(--selective-yellow);
+  color: var(--oxford-blue);
+  border-color: var(--selective-yellow);
 }
 
-/* Logo main text */
-.logo-text {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #0062cc;
-    text-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
-    line-height: 1;
-    margin: 0;
-    padding: 0;
+.btn-primary:hover {
+  background: var(--mustard);
+  border-color: var(--mustard);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  color: var(--oxford-blue);
 }
 
-/* New tagline style */
-.logo-tagline {
-    font-size: 0.9rem; /* Smaller text size */
-    color: #201B4F; /* Dark blue color to match navigation bar */
-    text-align: right; /* Align to the right */
-    align-self: flex-end; /* Align to the right side of container */
-    font-weight: 500; /* Semi-bold weight */
-    margin-top: 0.2rem; /* Small space between logo text and tagline */
-    font-style: italic; /* Optional: adds a slight italic look */
-    text-shadow: 0 0 2px rgba(255, 255, 255, 0.6); /* Subtle text shadow */
-    white-space: nowrap; /* Prevent wrapping */
-    line-height: 1;
+.btn-secondary {
+  background: transparent;
+  color: var(--white);
+  border-color: var(--white);
 }
 
-/* Mobile adjustments for the logo text and tagline */
-@media (max-width: 768px) {
-    .logo-text {
-        font-size: 1.8rem; /* Slightly smaller on mobile */
-    }
-    
-    .logo-tagline {
-        font-size: 0.8rem; /* Smaller on mobile */
-    }
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
 }
 
-/* Logo container adjustments - consistent across all devices */
-.logo img {
-    height: 75px; /* Keep consistent size for all viewports */
-    width: auto; /* Maintain aspect ratio */
-    object-fit: contain; /* Ensure the image fits properly */
-    margin: 0; /* Remove any margin that might add to the height */
+.btn-outline {
+  background: transparent;
+  color: var(--oxford-blue);
+  border-color: var(--oxford-blue);
 }
 
-/* Navigation menu positioning in the nav-bar */
-nav {
-    height: 100%;
-    display: flex;
-    align-items: center;
+.btn-outline:hover {
+  background: var(--oxford-blue);
+  color: var(--white);
+  transform: translateY(-2px);
 }
 
-/* Restore desktop navigation */
-@media (min-width: 769px) {
-    nav ul {
-        display: flex;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        gap: 2rem; /* Increase spacing between items */
-        height: 100%;
-        justify-content: flex-end; /* Align items to the right */
-    }
-    
-    nav ul li {
-        margin: 0;
-        height: 100%;
-        display: flex;
-        align-items: center;
-    }
-    
-    nav ul li a {
-        text-decoration: none;
-        color: white; /* Change text to white */
-        font-weight: 600;
-        text-shadow: none; /* Remove text shadow */
-        transition: color 0.3s;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        padding: 0 10px;
-    }
-    
-    nav ul li a:hover {
-        color: #ff9500; /* Orange hover color */
-    }
+.btn-lg {
+  padding: 18px 40px;
+  font-size: 1.1rem;
+  border-radius: 10px;
 }
 
-/* Mobile menu button positioning */
-.mobile-menu-btn {
-    display: none; /* Hide on desktop */
-    margin-left: auto; /* Push to right when visible */
+/* --- Navigation Header --- */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+  height: var(--header-height);
+  transition: box-shadow var(--transition), background var(--transition);
 }
 
-/* Mobile menu styles - properly contained in media query */
-@media (max-width: 768px) {
-    /* Restore original header style for mobile */
-    header {
-        background: linear-gradient(to right, #CCE5FF, #0066CC);
-        position: fixed !important;
-        padding: 1rem 0;
-        display: flex;
-        flex-direction: row;
-        border-bottom: 25px solid #201B4F;
-    }
-    
-    header::before {
-        opacity: 0.35;
-        background-attachment: scroll;
-        height: 100%; /* Restore full height background for mobile */
-    }
-    
-    /* Hide the nav-bar on mobile */
-    .nav-bar {
-        display: none;
-    }
-    
-    /* Keep original nav position for mobile */
-    nav {
-        margin-left: auto;
-    }
-    
-    .nav-container {
-        justify-content: space-between;
-    }
-    
-    .logo {
-        flex-grow: 1; /* Let logo take available space */
-    }
-    
-    .mobile-menu-btn {
-        display: block; /* Show on mobile */
-    }
-    
-    nav ul {
-        position: fixed;
-        top: 0;
-        left: -100%;
-        height: 100vh; /* Full height */
-        width: 100%;
-        max-width: 300px;
-        background-color: white;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        padding: 60px 0 20px;
-        margin: 0;
-        transition: left 0.3s ease;
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-        overflow-y: auto; /* Keep as fallback */
-        display: flex;
-    }
-
-    /* Show mobile menu button only on mobile */
-    .mobile-menu-btn {
-        display: flex; /* Show the button on mobile with flex for proper centering */
-        border: none;
-        position: fixed;
-        top: 1rem;
-        right: 1rem;
-        z-index: 1001;
-        background: transparent;
-        font-size: 1.5rem;
-        cursor: pointer;
-        padding: 0;
-        width: 40px;
-        height: 40px;
-        align-items: center;
-        justify-content: center;
-        background-color: rgba(255, 255, 255, 0.8);
-        border-radius: 50%;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        line-height: 1;
-    }
-    
-    /* Properly center the icon both horizontally and vertically */
-    .mobile-menu-btn span {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-        line-height: 0;
-    }
-    
-    /* Style for when menu is active */
-    .mobile-menu-btn.active {
-        background-color: rgba(0, 98, 204, 0.9);
-        color: white;
-    }
-
-    /* When menu is active (open) */
-    nav ul.active {
-        left: 0;
-    }
-
-    /* Dynamic spacing for menu items with flexbox */
-    nav ul li {
-        width: 100%;
-        margin: 0;
-        text-align: center;
-        padding: 0; /* Remove padding */
-        flex: 1; /* Make items distribute available space */
-        /* Use min/max height constraints for better control */
-        min-height: 40px; 
-        max-height: 80px;
-        display: flex; /* Nested flexbox for alignment */
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* Full-height links to maximize touch target */
-    nav ul li a {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        text-align: center;
-    }
-
-    /* Orientation-specific adjustments */
-    @media screen and (orientation: landscape) {
-        nav ul {
-            padding: 40px 10px 10px; /* Less padding overall */
-            flex-flow: row wrap; /* Allow items to wrap in multiple rows */
-            align-content: flex-start; /* Start items from top */
-            justify-content: flex-start; /* Left align for better space usage */
-            overflow-x: hidden; /* Prevent horizontal scrolling */
-        }
-        
-        nav ul li {
-            width: auto; /* Auto width instead of fixed percentage */
-            min-width: 120px; /* Minimum width to prevent tiny items */
-            max-width: 150px; /* Maximum width to allow more items per row */
-            min-height: 30px; /* Smaller height per item */
-            max-height: 50px; /* Prevent excessive height */
-            margin: 2px; /* Small margin between items */
-            flex: 0 1 auto; /* Don't force growth, allow shrinking, base on content size */
-        }
-        
-        nav ul li a {
-            font-size: 1rem; /* Smaller font */
-            padding: 5px; /* Add some padding */
-            white-space: nowrap; /* Prevent text wrapping */
-        }
-    }
-
-    /* Extra small height adjustments */
-    @media (max-height: 400px) {
-        nav ul {
-            padding-top: 40px;
-        }
-        
-        nav ul li {
-            min-height: 30px;
-        }
-        
-        nav ul li a {
-            font-size: 1rem;
-        }
-    }
-
-    /* Device-specific adjustments for iPhone SE and similar */
-    @media (max-height: 320px) {
-        nav ul li {
-            min-height: 25px;
-        }
-    }
-
-    /* Remove the visual scrollable indicator */
-    nav ul::after {
-        display: none;
-    }
-
-    /* Mobile header adjustments */
-    header {
-        position: fixed !important; /* Change from sticky to fixed for mobile */
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        z-index: 1000;
-        /* Improve performance with hardware acceleration */
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-    }
-    
-    /* Add padding to body to prevent content from hiding under fixed header */
-    body {
-        padding-top: 92px; /* Adjust this value to match your header height */
-    }
-    
-    /* Adjust padding for first section to account for sticky header */
-    section:first-of-type {
-        margin-top: 0;
-    }
-    
-    /* Retain scroll padding for anchor links */
-    html {
-        scroll-padding-top: 92px; /* Match the mobile header height */
-    }
-    
-    section[id] {
-        scroll-margin-top: 92px; /* Match the mobile scroll-padding-top */
-    }
+.site-header.scrolled {
+  box-shadow: var(--shadow-md);
 }
 
-/* Fix mobile menu visibility - ensure it appears on screen */
-@media (max-width: 768px) {
-    /* Ensure menu button is working */
-    .mobile-menu-btn {
-        display: flex;
-        position: fixed;
-        top: 1rem;
-        right: 1rem;
-        z-index: 1500; /* Increased z-index */
-    }
-    
-    /* Fix the nav ul element that needs to slide in */
-    nav ul {
-        position: fixed;
-        top: 0;
-        left: -100%; /* Start off-screen */
-        height: 100%;
-        width: 80%;
-        max-width: 300px;
-        background-color: white;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        padding: 60px 0 20px;
-        margin: 0;
-        transition: left 0.3s ease;
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-        z-index: 1400; /* Increased z-index but below menu button */
-        overflow-y: auto;
-    }
-    
-    /* Ensure active class actually works to show the menu */
-    nav ul.active {
-        left: 0 !important;
-        display: flex !important; /* Force display */
-    }
-    
-    /* Fix menu items */
-    nav ul li {
-        width: 100%;
-        text-align: center;
-        padding: 1rem 0;
-    }
-    
-    /* Fix any potential overriding display properties */
-    nav {
-        display: block !important;
-    }
-    
-    /* Change background color of nav in mobile to make it more visible */
-    nav ul.active {
-        background-color: rgba(255, 255, 255, 0.98);
-    }
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height);
 }
 
-/* Add this to your existing CSS file */
-/* Fix mobile menu visibility without replacing existing styles */
-@media (max-width: 768px) {
-    /* Ensure menu has correct z-index and display properties */
-    nav ul {
-        z-index: 1400 !important; 
-        background-color: white !important;
-    }
-    
-    nav ul.active {
-        left: 0 !important;
-        display: flex !important;
-    }
-    
-    /* Enhance visibility of menu button */
-    .mobile-menu-btn {
-        background-color: rgba(255, 255, 255, 0.9) !important;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
-        color: #333 !important;
-    }
-    
-    .mobile-menu-btn.active {
-        background-color: rgba(0, 98, 204, 0.9) !important;
-        color: white !important;
-    }
+.site-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
 }
 
-/* Fix mobile menu - consolidate all mobile menu styles into one cohesive block */
-@media (max-width: 768px) {
-    /* Basic mobile menu button styling */
-    .mobile-menu-btn {
-        display: block;
-        position: fixed;
-        top: 1rem;
-        right: 1rem;
-        z-index: 2000; /* Highest z-index */
-        background-color: rgba(255, 255, 255, 0.9);
-        border: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-    
-    /* Active state for menu button */
-    .mobile-menu-btn.active {
-        background-color: rgba(0, 98, 204, 0.9);
-        color: white;
-    }
-
-    /* Basic mobile nav styling */
-    nav {
-        display: block !important;
-    }
-    
-    /* Mobile menu - positioned off-screen by default */
-    nav ul {
-        position: fixed;
-        top: 0;
-        left: -100%; /* Start off-screen */
-        height: 100vh;
-        width: 80%;
-        max-width: 300px;
-        background-color: white;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 60px 0 20px;
-        margin: 0;
-        transition: left 0.3s ease;
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-        z-index: 1900; /* Just below menu button */
-        overflow-y: auto;
-        display: flex;
-    }
-    
-    /* Active state - slide in from left */
-    nav ul.active {
-        left: 0 !important;
-        display: flex !important;
-    }
-    
-    /* Menu items styling */
-    nav ul li {
-        width: 100%;
-        text-align: center;
-        padding: 1rem 0;
-    }
-    
-    /* Add overlay when menu is open */
-    .mobile-menu-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 1800;
-    }
-    
-    .mobile-menu-overlay.active {
-        display: block;
-    }
+.site-logo img {
+  height: 44px;
+  width: auto;
 }
 
-/* Hero section */
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-links a {
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--prussian-blue);
+  transition: all var(--transition);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: var(--mustard);
+  color: var(--oxford-blue);
+}
+
+.nav-cta {
+  margin-left: 12px;
+  padding: 10px 22px;
+  font-size: 0.9rem;
+}
+
+/* Mobile hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  background: none;
+  border: none;
+  transition: background var(--transition);
+}
+
+.hamburger:hover {
+  background: var(--light-gray);
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--prussian-blue);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile menu overlay */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: 100%;
+  background: var(--white);
+  z-index: 999;
+  border-top: 2px solid var(--mustard);
+  box-shadow: var(--shadow-md);
+  padding: 16px 24px 24px;
+  transform: translateY(-10px);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu.open {
+  display: block;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.mobile-menu a {
+  display: block;
+  padding: 14px 0;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--prussian-blue);
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.mobile-menu a:last-child {
+  border-bottom: none;
+}
+
+.mobile-menu .btn {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Page offset for sticky header */
+.page-offset {
+  padding-top: var(--header-height);
+}
+
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
 .hero {
-    background: url('../images/road.png');  
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed; /* This prevents the background from scrolling */
-    height: calc(100vh - 105px); /* Full viewport height minus the header */
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Center content horizontally */
-    color: white;
-    text-align: center;
-    position: relative;
-}
-
-/* Hero content container */
-.hero-content {
-    max-width: 800px;
-    padding: 2rem;
-    z-index: 2; /* Ensure content appears above any background elements */
-}
-
-/* Hero heading */
-.hero h1 {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-/* Hero subtext */
-.hero p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-}
-
-/* Hero call to action button */
-.hero .btn {
-    display: inline-block;
-    padding: 1rem 2rem;
-    background-color: #ff9500;
-    color: white;
-    text-decoration: none;
-    border-radius: 30px;
-    font-weight: 600;
-    transition: transform 0.3s, background-color 0.3s;
-    border: none;
-}
-
-.hero .btn:hover {
-    background-color: #e08600;
-    transform: translateY(-3px);
-}
-
-/* Fix background-attachment: fixed for iOS mobile devices */
-@supports (-webkit-overflow-scrolling: touch) {
-    .hero {
-        background-attachment: scroll; /* Use scroll instead of fixed on iOS */
-    }
-}
-
-/* Mobile adjustments for the hero section */
-@media (max-width: 768px) {
-    .hero {
-        height: calc(100vh - 92px); /* Adjust for mobile header height */
-    }
-    
-    .hero h1 {
-        font-size: 2rem;
-    }
-    
-    .hero p {
-        font-size: 1rem;
-    }
-    
-    .hero .cta-btn {
-        padding: 0.8rem 1.5rem;
-    }
-}
-
-/* Section styles */
-section:not(.hero) {
-    min-height: 60vh; /* All other sections should be 60% of viewport height */
-    padding-bottom: 4rem; /* Keep your existing padding */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Center content vertically */
-}
-
-/* For sections with IDs (likely scroll targets), ensure proper positioning */
-section[id] {
-    scroll-margin-top: 105px; /* Match the scroll-padding-top */
-}
-
-/* Mobile adjustments for section heights */
-@media (max-width: 768px) {
-    .hero {
-        height: calc(100vh - 92px); /* Adjust for mobile header height */
-    }
-    
-    section:not(.hero) {
-        min-height: 70vh;
-        padding: 2rem 1rem; /* Use your existing mobile padding */
-    }
-}
-
-/* Section transitions with improved alignment while keeping gradient effects */
-/* About section transition to Technology section */
-.about {
-    position: relative;
-    padding-bottom: 4rem; /* Standard padding, removing extra padding */
-    margin-bottom: 0;
-    z-index: 1;
-    background: #ffffff; /* Solid background */
-    overflow: visible;
-}
-
-/* Remove the white curved corner */
-.about::after {
-    display: none;
-}
-
-/* Technology section with no negative margins */
-.tech {
-    position: relative;
-    margin-top: 0; /* Remove negative margin */
-    margin-bottom: 0; /* Remove negative margin */
-    padding-top: 4rem; /* Add proper padding instead */
-    padding-bottom: 4rem;
-    z-index: 0;
-    overflow: visible;
-    background-color: #f8f9fa;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.05);
-}
-
-/* Who We Help section - no negative margin */
-.who-we-help {
-    position: relative;
-    overflow: visible; /* Changed from hidden to visible */
-    padding-top: 60px; /* Add top padding for spacing */
-    background-color: #ffffff; /* Ensure this section has its own background */
-    z-index: 1; /* Ensure proper stacking context */
-}
-
-/* Background image container - improved positioning */
-.who-we-help-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0; /* Behind content */
-    opacity: 0.75;
-    pointer-events: none;
-}
-
-/* Individual background images - fixed visibility */
-.who-we-help-bg-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-position: center top; /* Changed from default center to center top */
-    background-size: cover;
-    background-repeat: no-repeat;
-    opacity: 0; /* Start hidden */
-    transition: opacity 0.8s ease-in-out;
-    pointer-events: none;
-}
-
-/* Active background image */
-.who-we-help-bg-image.active {
-    opacity: 1; /* Show only the active one */
-}
-
-/* Ensure the container properly contains all content */
-.who-we-help .container {
-    position: relative;
-    z-index: 1; /* Above background images */
-    padding-top: 20px; /* Add some padding at the top */
-}
-
-/* Adjust background opacity and styling for different screen sizes */
-@media (max-width: 768px) {
-    .who-we-help-bg {
-        opacity: .75; /* Even more subtle on mobile */
-    }
-}
-
-/* Enhanced styling for Who We Help section title to stand out against background images */
-.who-we-help .section-title {
   position: relative;
-  z-index: 3; /* Ensure it's above the background images */
-  padding: 0.5rem 1.5rem; /* Add padding around the title */
-  margin-bottom: 3rem; /* Keep consistent spacing */
-  display: block; /* Changed from inline-block to block for centering */
-  width: fit-content; /* Make it only as wide as needed */
-  margin-left: auto; /* Center the element horizontally */
-  margin-right: auto;
-  text-align: center; /* Ensure text itself is centered */
+  background: linear-gradient(135deg, var(--oxford-blue) 0%, var(--prussian-blue) 50%, var(--indigo-dye) 100%);
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  align-items: center;
+  overflow: hidden;
 }
-  
-/* Create subtle blurred background for the section title */
-.who-we-help .section-title::before, .tech .section-title::before {
+
+.hero::before {
   content: '';
   position: absolute;
-  top: -10px;
+  top: -100px;
+  right: -100px;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: rgba(255, 211, 88, 0.06);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -150px;
+  left: -80px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: rgba(255, 185, 21, 0.04);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  padding: 80px 0;
+}
+
+.hero-text .section-label {
+  background: var(--mustard);
+  color: var(--oxford-blue);
+}
+
+.hero-text h1 {
+  color: var(--white);
+  margin: 20px 0 24px;
+}
+
+.hero-text h1 span {
+  color: var(--mustard);
+}
+
+.hero-text .lead {
+  color: rgba(255,255,255,0.82);
+  margin-bottom: 36px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 48px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.hero-stat {
+  background: rgba(0,0,0,0.2);
+  padding: 24px;
+  text-align: center;
+}
+
+.hero-stat .stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--mustard);
+  line-height: 1;
+}
+
+.hero-stat .stat-label {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.7);
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hero-image {
+  position: relative;
+}
+
+.hero-image-wrap {
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+.hero-image-wrap img {
+  width: 100%;
+  height: 480px;
+  object-fit: cover;
+}
+
+.hero-badge {
+  position: absolute;
+  bottom: -20px;
   left: -20px;
-  right: -20px;
-  bottom: -10px;
-  background: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
-  border-radius: 20px; /* Rounded corners */
-  filter: blur(20px); /* Create the blur effect */
-  opacity: 0.7; /* Slightly transparent */
-  z-index: -1; /* Place behind the text */
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-}
-  
-/* Ensure the title text remains crisp and centered */
-.who-we-help .section-title h2 {
-  position: relative;
-  z-index: 1; /* Above the blur effect */
-  margin: 0; /* Remove default margins */
-  color: #0062cc; /* Keep brand color */
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5); /* Subtle text shadow for better visibility */
-  text-align: center; /* Explicit center alignment */
+  background: var(--selective-yellow);
+  color: var(--oxford-blue);
+  border-radius: var(--border-radius);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-/* Mobile adjustments for Who We Help section title */
-@media (max-width: 768px) {
-  .who-we-help .section-title {
-    padding: 0.5rem 1rem; /* Adjust padding for smaller screens */
-    margin-bottom: 2rem; /* Reduce bottom margin on mobile */
-  }
+.hero-badge-icon {
+  font-size: 2rem;
 }
 
-/* Mobile adjustments for Who We Help section content */
-@media (max-width: 768px) {
-    .who-we-help .who-we-help-container {
-        padding: 0 15px;
-        overflow: visible;
-    }
-    
-    .who-we-help .help-item {
-        min-width: 85%;
-        padding: 1rem;
-        margin-right: 15px;
-    }
-    
-    .who-we-help .help-content {
-        margin-bottom: 0.6rem; /* Ensure consistent spacing in mobile view too */
-    }
-    
-    /* Improved positioning for Who We Help swipe indicators */
-    .who-we-help .who-we-help-container::before {
-        content: '';
-        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%233498db"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>') no-repeat;
-        display: block;
-        width: 36px;
-        height: 36px;
-        position: absolute;
-        top: calc(35% - 3.5rem); /* Adjust top position to account for content height */
-        right: 0;
-        z-index: 10;
-        background-size: contain;
-        opacity: 0.8;
-        animation: pulseRight 1.5s ease-in-out infinite;
-    }
-    
-    .who-we-help .who-we-help-container::after {
-        display: none;
-    }
+.hero-badge-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
-/* Technology section margins and padding */
-.tech {
-    position: relative;
-    z-index: 2; /* Higher than who-we-help section */
-    background-color: #f8f9fa;
-    padding-bottom: 60px; /* Add bottom padding for spacing */
-    box-shadow: 0 5px 10px rgba(0,0,0,0.05); /* Subtle shadow for separation */
-    background-image: url('../images/backgroundblue.jpg');
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: left center;
-    background-repeat: no-repeat;
-    overflow: visible; /* Allow content to extend past section boundaries */
-}
-
-/* Who We Help section transition from Technology section */
-.who-we-help {
-    position: relative;
-    padding-top: 100px; /* Add extra padding at the top for transition */
-    background: linear-gradient(to top, #ffffff 80%, rgba(255, 255, 255, 0) 100%);
-    z-index: 1;
-}
-
-/* Make sure section content stays above the background transitions */
-.container {
-    position: relative;
-    z-index: 2;
-    padding-bottom: 5vh;
-    padding-top: 5vh;
-}
-
-/* Prevent any potential spacing issues in the transition areas */
-section {
-    overflow: hidden;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.section-title {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.section-title h2 {
-    font-size: 2.5rem;
-    color: #0062cc;
-    position: relative;
-    display: inline-block;
-    padding-bottom: 1rem;
-}
-
-.section-title h2::after {
-    content: '';
-    position: absolute;
-    left: 25%;
-    bottom: 0;
-    width: 50%;
-    height: 3px;
-    background-color: #ff9500;
-}
-
-/* Services section - removing curved corner */
+/* ============================================================
+   SERVICES SECTION
+   ============================================================ */
 .services {
-    background-color: #f8f9fa;
-    position: relative;
-    z-index: 1; /* Ensure proper stacking context */
-    overflow: hidden; /* Prevent image from creating scrollbars */
-}
-
-/* Remove the base square and curved corner pseudo-elements */
-.services::before,
-.services::after {
-    display: none; /* Hide both pseudo-elements */
-}
-
-/* Keep the pencils background image separate and ensure it's visible */
-.services-background {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 40%; /* Larger base size */
-    padding-top: 40%; /* Maintain aspect ratio */
-    background-image: url('../images/pencils.png');
-    background-size: contain; /* Preserve aspect ratio */
-    background-position: bottom right;
-    background-repeat: no-repeat;
-    z-index: 1; /* Place behind content but above the basic background */
-    pointer-events: none; /* Allow interaction with content above it */
-}
-
-/* Responsive adjustments to remove services corners */
-@media (max-width: 768px) {
-    .about::before, 
-    .about::after {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .about::after {
-        border-radius: 60px 0 0 0; /* Smaller curve for about */
-    }
+  background: var(--yellow-tint);
 }
 
 .services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
 }
 
 .service-card {
-    background-color: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-out, 
-                box-shadow 0.2s ease-out,
-                opacity 0.2s ease-out;
-    will-change: transform, box-shadow, opacity;
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
 .service-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
 }
 
-.service-card img {
-    max-height: 50px;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    display: block;
-    margin: auto; /* Centers the image horizontally */
-    margin-top: 20px; /* Adjust this value to center vertically */
-    transition: transform 0.2s ease-out;
-    will-change: transform;
-}
-
-.service-content {
-    padding: 1.5rem;
-}
-
-.service-content h3 {
-    margin-bottom: 1rem;
-    color: #0062cc;
-    text-align: center; /* Centers the text horizontally */
-    transition: color 0.2s ease-out;
-}
-
-.service-card.in-view {
-    opacity: 1;
-}
-
-/* Prevent text selection on interactive elements */
-button, a, .service-card, .tech-tile, .about-image img {
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    user-select: none;
-}
-
-/* Remove the opacity change on active - this was causing the dulling effect */
-a:active, button:active, .service-card:active, .tech-tile:active, .about-image img:active {
-    opacity: 1; /* Keep full opacity instead of reducing it */
-}
-
-/* Reduce transition time on mobile for more responsive animations */
-@media (max-width: 768px) {
-    .service-card,
-    .service-card img,
-    .service-content h3 {
-        transition-duration: 0.15s; /* Faster transitions on mobile for immediate feedback */
-    }
-}
-
-/* Mobile service card animations */
-@media (max-width: 768px) {
-    .service-card {
-        transition: transform 0.3s ease-out, 
-                    box-shadow 0.3s ease-out;
-        /* Initial state slightly raised for smoother transition */
-        transform: translateY(-3px);
-        opacity: 0.9;
-    }
-    
-    .service-card img {
-        transition: transform 0.3s ease-out;
-        /* Initial state slightly scaled for smoother transition */
-        transform: scale(1.03);
-    }
-    
-    .service-content h3 {
-        transition: color 0.3s ease-out;
-        /* Initial color already slightly shifted toward target */
-        color: #0e70d4;
-    }
-    
-    /* Apply hover effects to in-view cards on mobile */
-    .service-card.in-view {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-        opacity: 1;
-    }
-    
-    .service-card.in-view img {
-        transform: scale(1.1);
-    }
-    
-    .service-card.in-view .service-content h3 {
-        color: #3498db;
-    }
-}
-
-/* About section */
-.about-flex {
-    display: flex;
-    align-items: center;
-    gap: 3rem;
-}
-
-.about-image {
-    flex: 1;
-}
-
-.about-image img {
-    width: 100%;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    cursor: pointer; /* Add cursor pointer to indicate it's clickable */
-    transition: transform 0.2s ease;
-}
-
-.about-image img:hover {
-    transform: scale(1.02); /* Slight scale effect on hover */
-}
-
-.about-content {
-    flex: 1;
-}
-
-.about-content h3 {
-    margin-bottom: 1rem;
-    font-size: 1.8rem;
-    color: #0062cc;
-}
-
-/* Image modal styles */
-.modal {
-    position: fixed;
-    z-index: 2000;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(2px);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none; /* Initially non-interactive */
-    /* Ensure modal container does not affect page layout */
-    overflow-y: auto;
-    /* Use GPU acceleration for smoother transitions */
-    will-change: opacity;
-}
-
-.modal.active {
-    display: flex !important; /* Force flex display when active */
-    opacity: 1;
-    pointer-events: auto; /* Make interactive when visible */
-}
-
-.modal-content {
-    max-width: 90%;
-    max-height: 90vh;
-    margin: auto;
-    display: block;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
-    border-radius: 5px;
-    animation: zoom 0.3s ease forwards;
-}
-
-@keyframes zoom {
-    from {transform: scale(0.9);}
-    to {transform: scale(1);}
-}
-
-/* Fix for the close button in the modal */
-.close-modal {
-    position: absolute;
-    top: 20px;
-    right: 25px;
-    color: white;
-    font-size: 35px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 2100;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    transition: background-color 0.2s, transform 0.2s;
-    line-height: 0; /* Fix vertical alignment */
-    padding-bottom: 8px; /* Keeping this value as is since it's working as desired */
-    text-align: center;
-}
-
-.close-modal:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
-}
-
-/* Focus handling and accessibility */
-.modal-content:focus,
-.close-modal:focus {
-    outline: 2px solid #0062cc;
-}
-
-/* Make modal work better on mobile */
-@media (max-width: 768px) {
-    .modal-content {
-        max-width: 95%;
-    }
-    
-    .close-modal {
-        top: 10px;
-        right: 10px;
-        font-size: 30px;
-    }
-}
-
-/* Tech section */
-.tech {
-    background-color: #f8f9fa;
-}
-
-.tech .tech-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-.tech .tech-showcase {
-    position: relative;
-    width: 100%;
-    min-height: 400px; /* Set a minimum height to prevent layout shifts */
-}
-
-.tech .showcase-item {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
-}
-
-.tech .showcase-item.active {
-    position: relative;
-    opacity: 1;
-    visibility: visible;
-}
-
-.tech .showcase-item img {
-    border-radius: 8px;
-    max-height: 15rem;
-    max-width: 100%;
-    height: auto; /* Maintain aspect ratio */
-    width: auto; /* Adjust to fit the image size */
-    border-radius: 10px 10px 0 0; /* Rounded corners for the top */
-    justify-content: center; /* Center the image horizontally */
-    display: block; /* Ensure the image is a block element for centering */
-    margin: 0 auto; /* Center the image in the container */
-}
-
-.tech .showcase-content {
-    margin-top: 1.5rem;
-    padding: 1.5rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
-
-.tech .showcase-specs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Changed from auto-fit to exactly 2 columns */
-    gap: 1.5rem; /* Increased gap for better spacing */
-    margin-top: 1.5rem;
-}
-
-.tech .spec-item {
-    padding: 0.35rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center horizontally */
-    text-align: center; /* Center text alignment */
-}
-
-.tech .spec-item span {
-    font-weight: bold;
-    color: #0062cc;
-    margin-bottom: 0.25rem;
-    text-align: center; /* Ensure span text is also centered */
-}
-
-.tech .spec-item p {
-    text-align: center; /* Ensure paragraph text is centered */
-    margin: 0;
-}
-
-.tech .tech-tiles {
-    order: 1;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-}
-
-.tech .tech-tile {
-    padding: 1.5rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.tech .tech-tile .showcase-content {
-    display: none;
-    padding-top: 1rem;
-    margin-top: 1rem;
-    border-top: 1px solid #dee2e6;
-}
-
-/* Who We Help section */
-.who-we-help .who-we-help-container {
-    position: relative;
-    max-width: 800px;
-    margin: 0 auto;
-    overflow: hidden !important; /* Force hidden overflow */
-    padding: 0 50px; /* Add padding to container to show adjacent card edges */
-}
-
-.who-we-help .who-we-help-slider {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-    width: 100%;
-}
-
-.who-we-help .help-item {
-    min-width: 100%;
-    padding: 2rem;
-    text-align: center;
-    position: relative;
-}
-
-/* Enhanced Who We Help section with gradient opacity effect */
-@media (min-width: 769px) {
-  .who-we-help .who-we-help-container {
-    max-width: 800px; /* Narrower container */
-    overflow: hidden !important; 
-    padding: 0; /* Remove padding that was showing adjacent slides */
-  }
-  
-  .who-we-help .who-we-help-slider {
-    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-    display: flex;
-    align-items: center;
-  }
-  
-  .who-we-help .help-item {
-    position: relative;
-    min-width: 100%;
-    opacity: 0; /* Hide all slides by default */
-    visibility: hidden; /* Completely hide non-active slides */
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-    padding: 1rem 2rem;
-    transform: scale(0.95); /* Slightly smaller initial scale */
-  }
-  
-  /* Enhanced active slide with border and callout look */
-  .who-we-help .help-item.active {
-    opacity: 0.85 !important; /* Show only active slide */
-    visibility: visible !important; /* Make active slide visible */
-    transform: scale(1); /* Normal scale for active slide */
-    z-index: 2;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(0, 98, 204, 0.15);
-    filter: blur(0);
-  }
-  
-  /* Keep visual indicator on active slide */
-  .who-we-help .help-item.active::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 10px;
-    background: linear-gradient(to right, #0062cc, #0062cc88);
-    border-radius: 10px 10px 0 0;
-  }
-  
-  /* Remove edge gradients as they're no longer needed */
-  .who-we-help .who-we-help-container::before,
-  .who-we-help .who-we-help-container::after {
-    display: none;
-  }
-}
-
-/* Enhanced slider controls with better visibility */
-.who-we-help .slider-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2rem;
+.service-card-image {
   position: relative;
-  z-index: 5;
-  background-color: rgba(255, 255, 255, 0.85);
-  border-radius: 40px;
-  padding: 0.5rem 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(5px);
-  display: inline-flex;
-  margin: 2rem auto;
-  width: 285px; /* Adjust width to fit content */
-  max-width: 90%; /* Ensure it doesn't exceed the container width */
-  opacity: 0.85; /* Slightly transparent for a modern look */
+  height: 220px;
+  overflow: hidden;
 }
 
-/* Enhanced navigation arrow buttons with simplified arrow style */
-.who-we-help .slider-btn {
-    background-color: transparent;
-    border: none;
-    color: #0062cc;
-    font-size: 3rem; /* Much larger font size for standalone arrows */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: auto; /* Auto width to fit content */
-    height: auto; /* Auto height to fit content */
-    padding: 0; /* Remove padding */
-    margin: 0 10px; /* Add horizontal spacing */
-    user-select: none; /* Prevent text selection */
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 0 5px rgba(0, 0, 0, 0.15); /* Add white glow */
-    font-weight: 700; /* Make arrows bolder */
-    line-height: 1;
-    opacity: 0.9;
-  }
-  
-  /* Custom arrow characters with better vertical centering */
-.who-we-help .prev-btn::before {
-    content: "\2039"; /* Unicode for ‹ */
-    position: relative;
-    top: -5px; /* Adjust vertical position */
-    display: block;
-    line-height: 0.6; /* Adjust line height for better vertical alignment */
-    font-size: 2rem;
-  }
-  
-  .who-we-help .next-btn::before {
-    content: "\203A"; /* Unicode for › */
-    position: relative;
-    top: -5px; /* Adjust vertical position */
-    display: block;
-    line-height: 0.6; /* Adjust line height for better vertical alignment */
-    font-size: 2rem;
-  }
+.service-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
 
-/* Hover effects for arrows */
-.who-we-help .slider-btn:hover {
-    color: #001a33; /* Darker color on hover */
-    transform: scale(1.1); /* Slightly larger on hover */
-    text-shadow: 0 2px 4px rgba(255, 255, 255, 1), 0 0 8px rgba(255, 255, 255, 1); /* Enhanced glow on hover */
-    opacity: 1;
-  }
-  
-  .who-we-help .slider-btn:active {
-    transform: scale(0.95); /* Slightly smaller when clicked */
-  }
-  
-  /* Mobile adjustments */
-  @media (max-width: 768px) {
-    .who-we-help .slider-btn {
-      font-size: 2.5rem; /* Slightly smaller on mobile */
-      margin: 0 5px;
-    }
-  }
+.service-card:hover .service-card-image img {
+  transform: scale(1.05);
+}
 
-/* Enhanced navigation dots */
-.who-we-help .slide-dots {
+.service-card-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(1,27,47,0.5) 100%);
+}
+
+.service-card-icon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 48px;
+  height: 48px;
+  background: var(--selective-yellow);
+  border-radius: 12px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 0.5rem;
-  margin: 0 1rem;
-  min-width: 130px;
+  justify-content: center;
+  font-size: 1.4rem;
 }
 
-.who-we-help .slide-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: #ccc;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  border: none;
-  padding: 0;
-  flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+.service-card-body {
+  padding: 28px;
 }
 
-.who-we-help .slide-dot.active {
-  width: 24px;
-  height: 12px;
+.service-card-body h3 {
+  margin-bottom: 12px;
+  color: var(--oxford-blue);
+}
+
+.service-card-body p {
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.service-card-body .btn {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+}
+
+/* ============================================================
+   ABOUT SECTION
+   ============================================================ */
+.about {
+  background: var(--white);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+.about-image-wrap {
+  position: relative;
+}
+
+.about-image-main {
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.about-image-main img {
+  width: 100%;
+  height: 440px;
+  object-fit: cover;
+}
+
+.about-image-badge {
+  position: absolute;
+  bottom: -24px;
+  right: -24px;
+  background: var(--prussian-blue);
+  color: var(--white);
+  border-radius: var(--border-radius);
+  padding: 24px;
+  text-align: center;
+  min-width: 140px;
+  box-shadow: var(--shadow-md);
+}
+
+.about-image-badge .badge-num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--mustard);
+}
+
+.about-image-badge .badge-label {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.8);
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+.about-content h2 {
+  margin-bottom: 20px;
+}
+
+.about-content .lead {
+  margin-bottom: 24px;
+}
+
+.about-content p {
+  margin-bottom: 28px;
+}
+
+.counties-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.county-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--yellow-tint);
+  border: 1px solid var(--mustard);
   border-radius: 10px;
-  background-color: #0062cc;
-  transform: scale(1.1);
-  box-shadow: 0 2px 5px rgba(0, 98, 204, 0.4);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--oxford-blue);
 }
 
-/* Improved hover state for dots */
-.who-we-help .slide-dot:not(.active):hover {
-  background-color: #999;
-  transform: scale(1.1);
+.county-chip svg, .county-chip .chip-icon {
+  color: var(--selective-yellow);
+  font-size: 1.1rem;
 }
 
-/* Focus styles for accessibility */
-.who-we-help .slide-dot:focus-visible {
-  outline: 2px solid #0062cc;
-  outline-offset: 2px;
+/* ============================================================
+   TECHNOLOGY SECTION
+   ============================================================ */
+.technology {
+  background: var(--mustard);
 }
 
-/* Mobile adjustments for the enhanced controls */
-@media (max-width: 768px) {
-  .who-we-help .slider-controls {
-    padding: 0.4rem 0.8rem;
-    border-radius: 30px;
-    max-width: 85%;
-  }
-  
-  .who-we-help .slider-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 1rem;
-    margin: 0 0.4rem;
-  }
-  
-  .who-we-help .slide-dots {
-    gap: 0.4rem;
-    min-width: 100px;
-  }
-  
-  .who-we-help .slide-dot {
-    width: 10px;
-    height: 10px;
-  }
-  
-  .who-we-help .slide-dot.active {
-    width: 20px;
-    height: 10px;
-  }
+.technology .section-header h2 {
+  color: var(--oxford-blue);
 }
 
-/* Update slider controls positioning */
-.who-we-help .slider-controls {
+.technology .section-header p {
+  color: rgba(1,27,47,0.75);
+}
+
+/* Tab Navigation */
+.tech-tabs {
   display: flex;
+  gap: 8px;
   justify-content: center;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+
+.tech-tab-btn {
+  padding: 12px 24px;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid rgba(1,27,47,0.2);
+  background: rgba(255,255,255,0.5);
+  color: var(--oxford-blue);
+  transition: all var(--transition);
+  display: flex;
   align-items: center;
-  margin-top: 2rem;
+  gap: 8px;
 }
 
-/* Shared styles for slider controls */
-.tech .slider-controls,
-.who-we-help .slider-controls {
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
+.tech-tab-btn:hover {
+  background: rgba(255,255,255,0.8);
+  border-color: var(--oxford-blue);
 }
 
-.tech .slider-btn,
-.who-we-help .slider-btn {
-    background-color: transparent;
-    border: none;
-    font-size: 1.5rem;
-    color: #0062cc;
-    cursor: pointer;
-    padding: 0.5rem;
-    margin: 0 1rem;
+.tech-tab-btn.active {
+  background: var(--oxford-blue);
+  color: var(--white);
+  border-color: var(--oxford-blue);
 }
 
-/* Add navigation dots for Who We Help section */
-.who-we-help .slide-dots {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.75rem;
-    margin: 0 1.5rem;
-    /* Create a fixed width container to maintain consistent spacing */
-    min-width: 120px; 
+/* Desktop tab content panel */
+.tech-panels {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
 }
 
-.who-we-help .slide-dot {
-    width: 15px;
-    height: 15px;
-    border-radius: 30px; /* Larger value to ensure rounded ends when expanded */
-    background-color: #ccc;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); /* Smooth transition with easing */
-    border: none;
-    padding: 0;
-    flex-shrink: 0; /* Prevent dots from shrinking */
+.tech-panel {
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
 }
 
-.who-we-help .slide-dot.active {
-    width: 30px; /* Double width for active dot */
-    background-color: #0062cc;
-    transform: scale(1.1); /* Slight scale for emphasis */
+.tech-panel.active {
+  display: grid;
 }
 
-/* Improved hover state */
-.who-we-help .slide-dot:not(.active):hover {
-    background-color: #a8a8a8;
-    transform: scale(1.1);
+.tech-panel-content {
+  padding: 52px 48px;
 }
 
-/* Focus styles for accessibility */
-.who-we-help .slide-dot:focus-visible {
-    outline: 2px solid #0062cc;
-    outline-offset: 2px;
+.tech-panel-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--mustard);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin-bottom: 24px;
 }
 
-/* Mobile adjustments */
-@media (max-width: 768px) {
-  .who-we-help .slide-dots {
-    gap: 0.6rem;
-    min-width: 100px;
-  }
-  
-  .who-we-help .slide-dot {
-    width: 10px;
-    height: 10px;
-  }
-  
-  .who-we-help .slide-dot.active {
-    width: 20px; /* Slightly smaller on mobile */
-  }
+.tech-panel-content h3 {
+  margin-bottom: 16px;
+  color: var(--oxford-blue);
 }
 
-/* Update the slider controls to include dots in between */
-.who-we-help .slider-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 2rem;
+.tech-panel-content p {
+  margin-bottom: 24px;
 }
 
-/* Ensure this works in mobile view too */
-@media (max-width: 768px) {
-    .who-we-help .slide-dots {
-        gap: 0.4rem;
-    }
-    
-    .who-we-help .slide-dot {
-        width: 8px;
-        height: 8px;
-    }
+.tech-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-/* Mobile adjustments */
-@media (max-width: 768px) {
-    
-    /* Tech section mobile */
-    .tech .showcase-specs {
-        display: grid;
-        grid-template-columns: 1fr; /* Changed to single column */
-        gap: 0.2rem; /* Reduced gap for mobile */
-        margin-top: 1rem;
-    }
-    
-    .tech .tech-tile {
-        position: relative;
-        padding: 1.5rem;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-    }
-
-    .tech .tech-tile::after {
-        content: '›';
-        position: absolute;
-        top: 1.6rem; /* Match the h3 position instead of 50% */
-        right: 1.5rem;
-        font-size: 2rem;
-        color: #0062cc;
-        transition: transform 0.3s ease;
-        transform-origin: center;
-        height: 24px;
-        line-height: 24px;
-    }
-
-    .tech .tech-tile.expanded::after {
-        transform: rotate(90deg); /* Remove translateY since we're using fixed positioning */
-        color: white; /* Match the expanded state text color */
-    }
-
-    .tech .tech-tile h3 {
-        color: #0062cc;
-        margin-bottom: 0.5rem;
-        padding-right: 2.5rem; /* Increased padding to accommodate arrow */
-    }
-
-    .tech .tech-tile {
-        background: white;
-        border-radius: 10px;
-        padding: 1.5rem;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        position: relative; /* Keep this */
-        border: 1px solid rgba(0, 123, 255, 0.1);
-    }
-
-    .tech .tech-tile.expanded {
-        background: #0062cc;
-        margin-bottom: 1rem;
-        box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
-    }
-
-    .tech .tech-tile.expanded h3 {
-        color: white;
-    }
-
-    .tech .tech-tile.expanded p {
-        color: #333; /* Keep paragraph text dark */
-    }
-
-    .tech .tech-tile.expanded .showcase-content p {
-        color: #333; /* Ensure expanded content text stays dark */
-    }
-
-    .tech .tech-tile {
-        background: #f8f9fa;
-        border-radius: 8px;
-        padding: 1.5rem;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-    }
-
-    .tech .tech-tile h3,
-    .tech .tech-tile p {
-        transition: color 0.3s ease-in-out;
-    }
-
-    .tech .tech-tile .showcase-content {
-        display: block;
-        opacity: 0;
-        max-height: 0;
-        overflow: hidden;
-        margin-top: 0;
-        padding: 0 1rem;
-        background: #f8f9fa;
-        border-radius: 8px;
-        transition: all 0.3s ease-in-out;
-    }
-
-    .tech .tech-tile.expanded {
-        background: #0062cc;
-        margin-bottom: 1rem;
-    }
-
-    .tech .tech-tile.expanded h3,
-    .tech .tech-tile.expanded > p {
-        color: white;
-    }
-
-    .tech .tech-tile.expanded .showcase-content {
-        opacity: 1;
-        max-height: 2000px;
-        margin-top: 1rem;
-        padding: 1rem;
-    }
-
-    .tech .tech-showcase {
-        display: none;
-    }
-
-    .tech .tech-tiles {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    /* Who We Help section mobile */
-    .who-we-help {
-        padding-top: 60px; /* Ensure content isn't hidden by header */
-    }
-    
-    .who-we-help .who-we-help-container {
-        padding: 0 15px;
-        overflow: visible;
-    }
-    
-    .who-we-help .help-item {
-        min-width: 85%;
-        padding: 1rem;
-        margin-right: 15px;
-    }
-    
-    .who-we-help .help-content {
-        margin-bottom: 0.6rem; /* Ensure consistent spacing in mobile view too */
-    }
-    
-    /* Improved positioning for Who We Help swipe indicators */
-    .who-we-help .who-we-help-container::before {
-        content: '';
-        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%233498db"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>') no-repeat;
-        display: block;
-        width: 36px;
-        height: 36px;
-        position: absolute;
-        top: calc(35% - 3.5rem); /* Adjust top position to account for content height */
-        right: 0;
-        z-index: 10;
-        background-size: contain;
-        opacity: 0.8;
-        animation: pulseRight 1.5s ease-in-out infinite;
-    }
-    
-    .who-we-help .who-we-help-container::after {
-        display: none;
-    }
+.tech-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--yellow-tint);
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--oxford-blue);
 }
 
-/* Technology section margins and padding */
-.tech {
-    position: relative;
-    z-index: 2; /* Higher than who-we-help section */
-    background-color: #f8f9fa;
-    padding-bottom: 60px; /* Add bottom padding for spacing */
-    box-shadow: 0 5px 10px rgba(0,0,0,0.05); /* Subtle shadow for separation */
-    background-image: url('../images/backgroundblue.jpg');
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: left center;
-    background-repeat: no-repeat;
-    overflow: visible; /* Allow content to extend past section boundaries */
+.tech-feature-item::before {
+  content: '✓';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: var(--selective-yellow);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  color: var(--oxford-blue);
 }
 
-/* Who We Help section transition from Technology section */
+.tech-panel-image {
+  position: relative;
+  overflow: hidden;
+  min-height: 380px;
+}
+
+.tech-panel-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Mobile accordion */
+.tech-accordion {
+  display: none;
+}
+
+.tech-accordion-item {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.tech-accordion-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-body);
+  transition: background var(--transition);
+}
+
+.tech-accordion-header:hover {
+  background: var(--yellow-tint);
+}
+
+.tech-accordion-header.open {
+  background: var(--prussian-blue);
+  color: var(--white);
+}
+
+.tech-accordion-header.open .tech-accordion-title {
+  color: var(--white);
+}
+
+.tech-accordion-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--mustard);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.tech-accordion-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--oxford-blue);
+  flex: 1;
+}
+
+.tech-accordion-chevron {
+  font-size: 1rem;
+  color: var(--medium-gray);
+  transition: transform 0.3s ease;
+}
+
+.tech-accordion-header.open .tech-accordion-chevron {
+  transform: rotate(180deg);
+  color: var(--white);
+}
+
+.tech-accordion-body {
+  display: none;
+  padding: 0 24px 24px;
+}
+
+.tech-accordion-body.open {
+  display: block;
+}
+
+.tech-accordion-body p {
+  margin-bottom: 16px;
+}
+
+/* ============================================================
+   WHO WE HELP SECTION
+   ============================================================ */
 .who-we-help {
-    position: relative;
-    padding-top: 100px; /* Add extra padding at the top for transition */
-    background: linear-gradient(to top, #ffffff 80%, rgba(255, 255, 255, 0) 100%);
-    z-index: 1;
+  background: var(--light-gray);
 }
 
-/* Make sure section content stays above the background transitions */
-.container {
-    position: relative;
-    z-index: 2;
-    padding-bottom: 5vh;
-    padding-top: 5vh;
+.who-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
 }
 
-/* Prevent any potential spacing issues in the transition areas */
-section {
-    overflow: hidden;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.section-title {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.section-title h2 {
-    font-size: 2.5rem;
-    color: #0062cc;
-    position: relative;
-    display: inline-block;
-    padding-bottom: 1rem;
-}
-
-.section-title h2::after {
-    content: '';
-    position: absolute;
-    left: 25%;
-    bottom: 0;
-    width: 50%;
-    height: 3px;
-    background-color: #ff9500;
-}
-
-/* Services section - removing curved corner */
-.services {
-    background-color: #f8f9fa;
-    position: relative;
-    z-index: 1; /* Ensure proper stacking context */
-    overflow: hidden; /* Prevent image from creating scrollbars */
-}
-
-/* Remove the base square and curved corner pseudo-elements */
-.services::before,
-.services::after {
-    display: none; /* Hide both pseudo-elements */
-}
-
-/* Keep the pencils background image separate and ensure it's visible */
-.services-background {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 40%; /* Larger base size */
-    padding-top: 40%; /* Maintain aspect ratio */
-    background-image: url('../images/pencils.png');
-    background-size: contain; /* Preserve aspect ratio */
-    background-position: bottom right;
-    background-repeat: no-repeat;
-    z-index: 1; /* Place behind content but above the basic background */
-    pointer-events: none; /* Allow interaction with content above it */
-}
-
-/* Responsive adjustments to remove services corners */
-@media (max-width: 768px) {
-    .about::before, 
-    .about::after {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .about::after {
-        border-radius: 60px 0 0 0; /* Smaller curve for about */
-    }
-}
-
-.services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.service-card {
-    background-color: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-out, 
-                box-shadow 0.2s ease-out,
-                opacity 0.2s ease-out;
-    will-change: transform, box-shadow, opacity;
-}
-
-.service-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-}
-
-.service-card img {
-    max-height: 50px;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    display: block;
-    margin: auto; /* Centers the image horizontally */
-    margin-top: 20px; /* Adjust this value to center vertically */
-    transition: transform 0.2s ease-out;
-    will-change: transform;
-}
-
-.service-content {
-    padding: 1.5rem;
-}
-
-.service-content h3 {
-    margin-bottom: 1rem;
-    color: #0062cc;
-    text-align: center; /* Centers the text horizontally */
-    transition: color 0.2s ease-out;
-}
-
-.service-card.in-view {
-    opacity: 1;
-}
-
-/* Prevent text selection on interactive elements */
-button, a, .service-card, .tech-tile, .about-image img {
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    user-select: none;
-}
-
-/* Remove the opacity change on active - this was causing the dulling effect */
-a:active, button:active, .service-card:active, .tech-tile:active, .about-image img:active {
-    opacity: 1; /* Keep full opacity instead of reducing it */
-}
-
-/* Reduce transition time on mobile for more responsive animations */
-@media (max-width: 768px) {
-    .service-card,
-    .service-card img,
-    .service-content h3 {
-        transition-duration: 0.15s; /* Faster transitions on mobile for immediate feedback */
-    }
-}
-
-/* Mobile service card animations */
-@media (max-width: 768px) {
-    .service-card {
-        transition: transform 0.3s ease-out, 
-                    box-shadow 0.3s ease-out;
-        /* Initial state slightly raised for smoother transition */
-        transform: translateY(-3px);
-        opacity: 0.9;
-    }
-    
-    .service-card img {
-        transition: transform 0.3s ease-out;
-        /* Initial state slightly scaled for smoother transition */
-        transform: scale(1.03);
-    }
-    
-    .service-content h3 {
-        transition: color 0.3s ease-out;
-        /* Initial color already slightly shifted toward target */
-        color: #0e70d4;
-    }
-    
-    /* Apply hover effects to in-view cards on mobile */
-    .service-card.in-view {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-        opacity: 1;
-    }
-    
-    .service-card.in-view img {
-        transform: scale(1.1);
-    }
-    
-    .service-card.in-view .service-content h3 {
-        color: #3498db;
-    }
-}
-
-/* About section */
-.about-flex {
-    display: flex;
-    align-items: center;
-    gap: 3rem;
-}
-
-.about-image {
-    flex: 1;
-}
-
-.about-image img {
-    width: 100%;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    cursor: pointer; /* Add cursor pointer to indicate it's clickable */
-    transition: transform 0.2s ease;
-}
-
-.about-image img:hover {
-    transform: scale(1.02); /* Slight scale effect on hover */
-}
-
-.about-content {
-    flex: 1;
-}
-
-.about-content h3 {
-    margin-bottom: 1rem;
-    font-size: 1.8rem;
-    color: #0062cc;
-}
-
-/* Image modal styles */
-.modal {
-    position: fixed;
-    z-index: 2000;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(2px);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none; /* Initially non-interactive */
-    /* Ensure modal container does not affect page layout */
-    overflow-y: auto;
-    /* Use GPU acceleration for smoother transitions */
-    will-change: opacity;
-}
-
-.modal.active {
-    display: flex !important; /* Force flex display when active */
-    opacity: 1;
-    pointer-events: auto; /* Make interactive when visible */
-}
-
-.modal-content {
-    max-width: 90%;
-    max-height: 90vh;
-    margin: auto;
-    display: block;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
-    border-radius: 5px;
-    animation: zoom 0.3s ease forwards;
-}
-
-@keyframes zoom {
-    from {transform: scale(0.9);}
-    to {transform: scale(1);}
-}
-
-/* Fix for the close button in the modal */
-.close-modal {
-    position: absolute;
-    top: 20px;
-    right: 25px;
-    color: white;
-    font-size: 35px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 2100;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    transition: background-color 0.2s, transform 0.2s;
-    line-height: 0; /* Fix vertical alignment */
-    padding-bottom: 8px; /* Keeping this value as is since it's working as desired */
-    text-align: center;
-}
-
-.close-modal:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
-}
-
-/* Focus handling and accessibility */
-.modal-content:focus,
-.close-modal:focus {
-    outline: 2px solid #0062cc;
-}
-
-/* Make modal work better on mobile */
-@media (max-width: 768px) {
-    .modal-content {
-        max-width: 95%;
-    }
-    
-    .close-modal {
-        top: 10px;
-        right: 10px;
-        font-size: 30px;
-    }
-}
-
-/* Tech section */
-.tech {
-    background-color: #f8f9fa;
-}
-
-.tech .tech-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-.tech .tech-showcase {
-    position: relative;
-    width: 100%;
-    min-height: 400px; /* Set a minimum height to prevent layout shifts */
-}
-
-.tech .showcase-item {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
-}
-
-.tech .showcase-item.active {
-    position: relative;
-    opacity: 1;
-    visibility: visible;
-}
-
-.tech .showcase-item img {
-    border-radius: 8px;
-    max-height: 15rem;
-    max-width: 100%;
-    height: auto; /* Maintain aspect ratio */
-    width: auto; /* Adjust to fit the image size */
-    border-radius: 10px 10px 0 0; /* Rounded corners for the top */
-    justify-content: center; /* Center the image horizontally */
-    display: block; /* Ensure the image is a block element for centering */
-    margin: 0 auto; /* Center the image in the container */
-}
-
-.tech .showcase-content {
-    margin-top: 1.5rem;
-    padding: 1.5rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
-
-.tech .showcase-specs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Changed from auto-fit to exactly 2 columns */
-    gap: 1.5rem; /* Increased gap for better spacing */
-    margin-top: 1.5rem;
-}
-
-.tech .spec-item {
-    padding: 0.35rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center horizontally */
-    text-align: center; /* Center text alignment */
-}
-
-.tech .spec-item span {
-    font-weight: bold;
-    color: #0062cc;
-    margin-bottom: 0.25rem;
-    text-align: center; /* Ensure span text is also centered */
-}
-
-.tech .spec-item p {
-    text-align: center; /* Ensure paragraph text is centered */
-    margin: 0;
-}
-
-.tech .tech-tiles {
-    order: 1;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-}
-
-.tech .tech-tile {
-    padding: 1.5rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.tech .tech-tile .showcase-content {
-    display: none;
-    padding-top: 1rem;
-    margin-top: 1rem;
-    border-top: 1px solid #dee2e6;
-}
-
-/* Who We Help section */
-.who-we-help .who-we-help-container {
-    position: relative;
-    max-width: 800px;
-    margin: 0 auto;
-    overflow: hidden !important; /* Force hidden overflow */
-    padding: 0 50px; /* Add padding to container to show adjacent card edges */
-}
-
-.who-we-help .who-we-help-slider {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-    width: 100%;
-}
-
-.who-we-help .help-item {
-    min-width: 100%;
-    padding: 2rem;
-    text-align: center;
-    position: relative;
-}
-
-/* Enhanced Who We Help section with gradient opacity effect */
-@media (min-width: 769px) {
-  .who-we-help .who-we-help-container {
-    max-width: 800px; /* Narrower container */
-    overflow: hidden !important; 
-    padding: 0; /* Remove padding that was showing adjacent slides */
-  }
-  
-  .who-we-help .who-we-help-slider {
-    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-    display: flex;
-    align-items: center;
-  }
-  
-  .who-we-help .help-item {
-    position: relative;
-    min-width: 100%;
-    opacity: 0; /* Hide all slides by default */
-    visibility: hidden; /* Completely hide non-active slides */
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-    padding: 1rem 2rem;
-    transform: scale(0.95); /* Slightly smaller initial scale */
-  }
-  
-  /* Enhanced active slide with border and callout look */
-  .who-we-help .help-item.active {
-    opacity: 0.85 !important; /* Show only active slide */
-    visibility: visible !important; /* Make active slide visible */
-    transform: scale(1); /* Normal scale for active slide */
-    z-index: 2;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(0, 98, 204, 0.15);
-    filter: blur(0);
-  }
-  
-  /* Keep visual indicator on active slide */
-  .who-we-help .help-item.active::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 10px;
-    background: linear-gradient(to right, #0062cc, #0062cc88);
-    border-radius: 10px 10px 0 0;
-  }
-  
-  /* Remove edge gradients as they're no longer needed */
-  .who-we-help .who-we-help-container::before,
-  .who-we-help .who-we-help-container::after {
-    display: none;
-  }
-}
-
-/* Enhanced slider controls with better visibility */
-.who-we-help .slider-controls {
+.who-card {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+  border: 1px solid rgba(0,0,0,0.05);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2rem;
-  position: relative;
-  z-index: 5;
-  background-color: rgba(255, 255, 255, 0.85);
-  border-radius: 40px;
-  padding: 0.5rem 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(5px);
-  display: inline-flex;
-  margin: 2rem auto;
-  width: 285px; /* Adjust width to fit content */
-  max-width: 90%; /* Ensure it doesn't exceed the container width */
-  opacity: 0.85; /* Slightly transparent for a modern look */
+  flex-direction: column;
 }
 
-/* Enhanced navigation arrow buttons with simplified arrow style */
-.who-we-help .slider-btn {
-    background-color: transparent;
-    border: none;
-    color: #0062cc;
-    font-size: 3rem; /* Much larger font size for standalone arrows */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: auto; /* Auto width to fit content */
-    height: auto; /* Auto height to fit content */
-    padding: 0; /* Remove padding */
-    margin: 0 10px; /* Add horizontal spacing */
-    user-select: none; /* Prevent text selection */
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 0 5px rgba(0, 0, 0, 0.15); /* Add white glow */
-    font-weight: 700; /* Make arrows bolder */
-    line-height: 1;
-    opacity: 0.9;
-  }
-  
-  /* Custom arrow characters with better vertical centering */
-.who-we-help .prev-btn::before {
-    content: "\2039"; /* Unicode for ‹ */
-    position: relative;
-    top: -5px; /* Adjust vertical position */
-    display: block;
-    line-height: 0.6; /* Adjust line height for better vertical alignment */
-    font-size: 2rem;
-  }
-  
-  .who-we-help .next-btn::before {
-    content: "\203A"; /* Unicode for › */
-    position: relative;
-    top: -5px; /* Adjust vertical position */
-    display: block;
-    line-height: 0.6; /* Adjust line height for better vertical alignment */
-    font-size: 2rem;
-  }
+.who-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
 
-/* Hover effects for arrows */
-.who-we-help .slider-btn:hover {
-    color: #001a33; /* Darker color on hover */
-    transform: scale(1.1); /* Slightly larger on hover */
-    text-shadow: 0 2px 4px rgba(255, 255, 255, 1), 0 0 8px rgba(255, 255, 255, 1); /* Enhanced glow on hover */
-    opacity: 1;
-  }
-  
-  .who-we-help .slider-btn:active {
-    transform: scale(0.95); /* Slightly smaller when clicked */
-  }
-  
-  /* Mobile adjustments */
-  @media (max-width: 768px) {
-    .who-we-help .slider-btn {
-      font-size: 2.5rem; /* Slightly smaller on mobile */
-      margin: 0 5px;
-    }
-  }
-
-/* Enhanced navigation dots */
-.who-we-help .slide-dots {
+.who-card-header {
+  background: linear-gradient(135deg, var(--prussian-blue), var(--indigo-dye));
+  padding: 28px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 0.5rem;
-  margin: 0 1rem;
-  min-width: 130px;
+  gap: 16px;
 }
 
-.who-we-help .slide-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: #ccc;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  border: none;
-  padding: 0;
+.who-card-avatar {
+  width: 56px;
+  height: 56px;
+  background: var(--selective-yellow);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
   flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
-.who-we-help .slide-dot.active {
-  width: 24px;
-  height: 12px;
-  border-radius: 10px;
-  background-color: #0062cc;
-  transform: scale(1.1);
-  box-shadow: 0 2px 5px rgba(0, 98, 204, 0.4);
+.who-card-title {
+  color: var(--white);
+  font-size: 1.15rem;
 }
 
-/* Improved hover state for dots */
-.who-we-help .slide-dot:not(.active):hover {
-  background-color: #999;
-  transform: scale(1.1);
+.who-card-body {
+  padding: 28px;
+  flex: 1;
 }
 
-/* Focus styles for accessibility */
-.who-we-help .slide-dot:focus-visible {
-  outline: 2px solid #0062cc;
-  outline-offset: 2px;
-}
-
-/* Mobile adjustments for the enhanced controls */
-@media (max-width: 768px) {
-  .who-we-help .slider-controls {
-    padding: 0.4rem 0.8rem;
-    border-radius: 30px;
-    max-width: 85%;
-  }
-  
-  .who-we-help .slider-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 1rem;
-    margin: 0 0.4rem;
-  }
-  
-  .who-we-help .slide-dots {
-    gap: 0.4rem;
-    min-width: 100px;
-  }
-  
-  .who-we-help .slide-dot {
-    width: 10px;
-    height: 10px;
-  }
-  
-  .who-we-help .slide-dot.active {
-    width: 20px;
-    height: 10px;
-}
-}
-
-/* Update slider controls positioning */
-.who-we-help .slider-controls {
+.who-card-body ul {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2rem;
+  flex-direction: column;
+  gap: 10px;
 }
 
-/* Shared styles for slider controls */
-.tech .slider-controls,
-.who-we-help .slider-controls {
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
+.who-card-body li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: var(--dark-text);
+  line-height: 1.5;
 }
 
-.tech .slider-btn,
-.who-we-help .slider-btn {
-    background-color: transparent;
-    border: none;
-    font-size: 1.5rem;
-    color: #0062cc;
-    cursor: pointer;
-    padding: 0.5rem;
-    margin: 0 1rem;
+.who-card-body li::before {
+  content: '→';
+  color: var(--selective-yellow);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 
-/* Add navigation dots for Who We Help section */
-.who-we-help .slide-dots {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.75rem;
-    margin: 0 1.5rem;
-    /* Create a fixed width container to maintain consistent spacing */
-    min-width: 120px; 
-}
-
-.who-we-help .slide-dot {
-    width: 15px;
-    height: 15px;
-    border-radius: 30px; /* Larger value to ensure rounded ends when expanded */
-    background-color: #ccc;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); /* Smooth transition with easing */
-    border: none;
-    padding: 0;
-    flex-shrink: 0; /* Prevent dots from shrinking */
-}
-
-.who-we-help .slide-dot.active {
-    width: 30px; /* Double width for active dot */
-    background-color: #0062cc;
-    transform: scale(1.1); /* Slight scale for emphasis */
-}
-
-/* Improved hover state */
-.who-we-help .slide-dot:not(.active):hover {
-    background-color: #a8a8a8;
-    transform: scale(1.1);
-}
-
-/* Focus styles for accessibility */
-.who-we-help .slide-dot:focus-visible {
-    outline: 2px solid #0062cc;
-    outline-offset: 2px;
-}
-
-/* Mobile adjustments for the enhanced controls */
-@media (max-width: 768px) {
-    .who-we-help .slider-controls {
-      padding: 0.4rem 0.8rem;
-      border-radius: 30px;
-      max-width: 85%;
-    }
-    
-    .who-we-help .slider-btn {
-      width: 32px;
-      height: 32px;
-      font-size: 1rem;
-      margin: 0 0.4rem;
-    }
-    
-    .who-we-help .slide-dots {
-      gap: 0.4rem;
-      min-width: 100px;
-    }
-    
-    .who-we-help .slide-dot {
-      width: 8px;
-      height: 8px;
-    }
-    
-    .who-we-help .slide-dot.active {
-      width: 16px;
-      height: 8px;
-    }
-  }
-  
-  /* Update slider controls positioning */
-  .who-we-help .slider-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 2rem;
-  }
-  
-  /* Shared styles for slider controls */
-  .tech .slider-controls,
-  .who-we-help .slider-controls {
-      display: flex;
-      justify-content: center;
-      margin-top: 2rem;
-  }
-  
-  .tech .slider-btn,
-  .who-we-help .slider-btn {
-      background-color: transparent;
-      border: none;
-      font-size: 1.5rem;
-      color: #0062cc;
-      cursor: pointer;
-      padding: 0.5rem;
-      margin: 0 1rem;
-  }
-  
-  /* Add navigation dots for Who We Help section */
-  .who-we-help .slide-dots {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0.75rem;
-      margin: 0 1.5rem;
-      /* Create a fixed width container to maintain consistent spacing */
-      min-width: 120px; 
-  }
-  
-  .who-we-help .slide-dot {
-      width: 15px;
-      height: 15px;
-      border-radius: 30px; /* Larger value to ensure rounded ends when expanded */
-      background-color: #ccc;
-      cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); /* Smooth transition with easing */
-      border: none;
-      padding: 0;
-      flex-shrink: 0; /* Prevent dots from shrinking */
-  }
-  
-  .who-we-help .slide-dot.active {
-      width: 30px; /* Double width for active dot */
-      background-color: #0062cc;
-      transform: scale(1.1); /* Slight scale for emphasis */
-  }
-  
-  /* Improved hover state */
-  .who-we-help .slide-dot:not(.active):hover {
-      background-color: #a8a8a8;
-      transform: scale(1.1);
-  }
-  
-  /* Focus styles for accessibility */
-  .who-we-help .slide-dot:focus-visible {
-      outline: 2px solid #0062cc;
-      outline-offset: 2px;
-  }
-  
-  /* Mobile adjustments for the enhanced controls */
-  @media (max-width: 768px) {
-    .who-we-help .slider-controls {
-      padding: 0.4rem 0.8rem;
-      border-radius: 30px;
-      max-width: 85%;
-    }
-    
-    .who-we-help .slider-btn {
-      width: 32px;
-      height: 32px;
-      font-size: 1rem;
-      margin: 0 0.4rem;
-    }
-    
-    .who-we-help .slide-dots {
-      gap: 0.4rem;
-      min-width: 100px;
-    }
-    
-    .who-we-help .slide-dot {
-      width: 8px;
-      height: 8px;
-    }
-    
-    .who-we-help .slide-dot.active {
-      width: 16px;
-      height: 8px;
-}
-}
-
-/* Mobile adjustments */
-@media (max-width: 768px) {
-    
-    /* Tech section mobile */
-    .tech .showcase-specs {
-        display: grid;
-        grid-template-columns: 1fr; /* Changed to single column */
-        gap: 0.2rem; /* Reduced gap for mobile */
-        margin-top: 1rem;
-    }
-    
-    .tech .tech-tile {
-        position: relative;
-        padding: 1.5rem;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-    }
-
-    .tech .tech-tile::after {
-        content: '›';
-        position: absolute;
-        top: 1.6rem; /* Match the h3 position instead of 50% */
-        right: 1.5rem;
-        font-size: 2rem;
-        color: #0062cc;
-        transition: transform 0.3s ease;
-        transform-origin: center;
-        height: 24px;
-        line-height: 24px;
-    }
-
-    .tech .tech-tile.expanded::after {
-        transform: rotate(90deg); /* Remove translateY since we're using fixed positioning */
-        color: white; /* Match the expanded state text color */
-    }
-
-    .tech .tech-tile h3 {
-        color: #0062cc;
-        margin-bottom: 0.5rem;
-        padding-right: 2.5rem; /* Increased padding to accommodate arrow */
-    }
-
-    .tech .tech-tile {
-        background: white;
-        border-radius: 10px;
-        padding: 1.5rem;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        position: relative; /* Keep this */
-        border: 1px solid rgba(0, 123, 255, 0.1);
-    }
-
-    .tech .tech-tile.expanded {
-        background: #0062cc;
-        margin-bottom: 1rem;
-        box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
-    }
-
-    .tech .tech-tile.expanded h3 {
-        color: white;
-    }
-
-    .tech .tech-tile.expanded p {
-        color: #333; /* Keep paragraph text dark */
-    }
-
-    .tech .tech-tile.expanded .showcase-content p {
-        color: #333; /* Ensure expanded content text stays dark */
-    }
-
-    .tech .tech-tile {
-        background: #f8f9fa;
-        border-radius: 8px;
-        padding: 1.5rem;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-    }
-
-    .tech .tech-tile h3,
-    .tech .tech-tile p {
-        transition: color 0.3s ease-in-out;
-    }
-
-    .tech .tech-tile .showcase-content {
-        display: block;
-        opacity: 0;
-        max-height: 0;
-        overflow: hidden;
-        margin-top: 0;
-        padding: 0 1rem;
-        background: #f8f9fa;
-        border-radius: 8px;
-        transition: all 0.3s ease-in-out;
-    }
-
-    .tech .tech-tile.expanded {
-        background: #0062cc;
-        margin-bottom: 1rem;
-    }
-
-    .tech .tech-tile.expanded h3,
-    .tech .tech-tile.expanded > p {
-        color: white;
-    }
-
-    .tech .tech-tile.expanded .showcase-content {
-        opacity: 1;
-        max-height: 2000px;
-        margin-top: 1rem;
-        padding: 1rem;
-    }
-
-    .tech .tech-showcase {
-        display: none;
-    }
-
-    .tech .tech-tiles {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    /* Who We Help section mobile */
-    .who-we-help {
-        padding-top: 60px; /* Ensure content isn't hidden by header */
-    }
-    
-    .who-we-help .who-we-help-container {
-        padding: 0 15px;
-        overflow: visible;
-    }
-    
-    .who-we-help .help-item {
-        min-width: 85%;
-        padding: 1rem;
-        margin-right: 15px;
-    }
-    
-    .who-we-help .help-content {
-        margin-bottom: 0.6rem; /* Ensure consistent spacing in mobile view too */
-    }
-    
-    /* Improved positioning for Who We Help swipe indicators */
-    .who-we-help .who-we-help-container::before {
-        content: '';
-        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%233498db"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>') no-repeat;
-        display: block;
-        width: 36px;
-        height: 36px;
-        position: absolute;
-        top: calc(35% - 3.5rem); /* Adjust top position to account for content height */
-        right: 0;
-        z-index: 10;
-        background-size: contain;
-        opacity: 0.8;
-        animation: pulseRight 1.5s ease-in-out infinite;
-    }
-    
-    .who-we-help .who-we-help-container::after {
-        display: none;
-    }
-}
-
-/* Tech section desktop */
-@media (min-width: 992px) {
-    
-    /* Tech section desktop */
-    .tech .tech-layout {
-        flex-direction: row;
-    }
-
-    .tech .tech-showcase {
-        order: 1;
-        flex: 0 0 60%;
-    }
-
-    .tech .tech-tiles {
-        order: 2;
-        flex: 0 0 40%;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        justify-content: center;
-    }
-
-    .tech .tech-tile {
-        padding: 1.5rem;
-        background: #f8f9fa;
-        color: #333;  /* Keep text dark */
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.5s ease-in-out;
-    }
-
-    .tech .tech-tile:hover {
-        background: #e9ecef;
-        color: #333;  /* Keep text dark on hover */
-        transform: translateX(5px);
-        transition: all 0.15s ease-out;
-    }
-
-    .tech .tech-tile.active {
-        background: #0062cc;
-        color: white;  /* Only change text to white when active */
-        transform: translateX(10px);
-        transition: all 0.5s ease-in-out;
-    }
-
-    .tech .tech-tile:hover h3,
-    .tech .tech-tile:hover p {
-        color: #333;  /* Keep headings and paragraphs dark on hover */
-        transition: color 0.15s ease-out;
-    }
-
-    .tech .tech-tile.active h3,
-    .tech .tech-tile.active p {
-        color: white;  /* Only change to white when active */
-        transition: color 0.5s ease-in-out;
-    }
-
-    .tech .showcase-item {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
-    }
-
-    .tech .tech-showcase .showcase-item {
-        background-color: white;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        transform: translateY(-10px);
-    }
-
-    .tech .tech-showcase {
-        width: 100%;
-        height: auto;
-        border-radius: 10px 10px 0 0;
-    }
-
-    .tech .tech-showcase .showcase-content {
-        padding: 1.5rem;
-        background: white;
-        margin-top: 0;
-        border-radius: 0 0 10px 10px;
-    }
-}
-
-/* Ensure desktop hover effects still work */
-@media (min-width: 769px) {
-    .service-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
-    
-    .service-card:hover img {
-        transform: scale(1.1);
-    }
-    
-    .service-card:hover .service-content h3 {
-        color: #3498db;
-    }
-}
-
-/* Enhance desktop hover effects with smoother transitions */
-@media (min-width: 769px) {
-    /* Base state for service cards */
-    .service-card {
-        transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
-        overflow: hidden; /* Ensure image doesn't overflow during scale */
-    }
-    
-    .service-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Add smooth transition to images */
-    .service-card img {
-        transform: scale(1);
-        transition: transform 0.5s ease-out;
-        will-change: transform;
-    }
-    
-    .service-card:hover img {
-        transform: scale(1.1);
-    }
-    
-    /* Text color transitions */
-    .service-content h3 {
-        transition: color 0.4s ease-out;
-    }
-    
-    .service-card:hover .service-content h3 {
-        color: #3498db;
-    }
-    
-    /* Add subtle transition to paragraph text */
-    .service-content p {
-        transition: color 0.4s ease-out;
-    }
-}
-
-.client {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.client-image {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin-top: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #8cc4e9;
-    position: relative;
-}
-
-.client-image img {
-    max-width: 80%;
-    max-height: 80%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.slider-controls {
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
-}
-
-.slider-btn {
-    background-color: transparent;
-    border: none;
-    font-size: 1.5rem;
-    color: #0062cc;
-    cursor: pointer;
-    padding: 0.5rem;
-    margin: 0 1rem;
-}
-
-/* Contact section */
+/* ============================================================
+   CONTACT SECTION
+   ============================================================ */
 .contact {
-    background: linear-gradient(rgba(0, 98, 204, 0.9), rgba(0, 62, 130, 0.9));
-    color: white;
+  background: var(--yellow-tint);
 }
 
-.contact-flex {
-    display: flex;
-    gap: 3rem;
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 60px;
+  align-items: start;
 }
 
-.contact-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column; /* Stack items vertically */
-    justify-content: space-between; /* Distribute items evenly across the vertical space */
-    height: 100%; /* Ensure the container takes up the full height */
+.contact-info h2 {
+  margin-bottom: 16px;
 }
 
-.contact-form {
-    flex: 1;
+.contact-info .lead {
+  margin-bottom: 36px;
 }
 
-.contact-info h3, .contact-form h3 {
-    margin-bottom: 1.5rem;
-    font-size: 1.8rem;
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.info-item {
-    display: flex;
-    align-items: center; /* Aligns the icon and text vertically */
-    gap: 1.5rem; /* Adds spacing between the icon and text */
-    margin-bottom: 1.5rem; /* Optional: Add spacing between items for smaller screens */
+.contact-detail {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
 }
 
-.info-item .info-icon {
-    flex-shrink: 0; /* Prevents the icon from resizing */
-    width: 40px; /* Set a uniform width for the icons */
-    height: 40px; /* Set a uniform height for the icons */
-    display: flex;
-    align-items: center; /* Centers the icon vertically */
-    justify-content: center; /* Centers the icon horizontally */
-    font-size: 1.5rem; /* Adjust the font size of the icon */
-    border-radius: 50%; /* Makes the icon background circular */
+.contact-detail-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--prussian-blue);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  color: var(--mustard);
 }
 
-.info-item div {
-    display: flex;
-    flex-direction: column; /* Ensures the text stacks vertically */
-    justify-content: center; /* Aligns the text vertically */
+.contact-detail-text {
+  flex: 1;
 }
 
-.info-item a {
-    display: inline-block; /* Ensures the link behaves like regular text */
-    color: inherit; /* Inherits the text color */
-    text-decoration: none; /* Removes underline */
-    line-height: 1.5; /* Matches the line height of other text */
+.contact-detail-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--medium-gray);
+  margin-bottom: 4px;
 }
 
-.info-item p {
-    margin: 0; /* Removes any default margin that might cause misalignment */
+.contact-detail-value {
+  font-weight: 500;
+  color: var(--oxford-blue);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.contact-detail-value a {
+  color: var(--indigo-dye);
+  transition: color var(--transition);
+}
+
+.contact-detail-value a:hover {
+  color: var(--selective-yellow);
+}
+
+/* Contact Form */
+.contact-form-wrap {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: 40px;
+  box-shadow: var(--shadow-md);
+}
+
+.contact-form-wrap h3 {
+  margin-bottom: 24px;
+  color: var(--oxford-blue);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+  margin-bottom: 20px;
 }
 
-.form-control {
-    width: 100%;
-    padding: 0.8rem;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
+.form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--oxford-blue);
+  margin-bottom: 8px;
 }
 
-textarea.form-control {
-    height: 150px;
-    resize: none;
+.form-group label .required {
+  color: #E53E3E;
+  margin-left: 2px;
 }
 
-.contact .section-title h2 {
-    color: white;
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--dark-text);
+  background: var(--white);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+  appearance: none;
 }
 
-.info-icon {
-    width: 80px; /* Increase the size of the icons */
-    height: 80px; /* Increase the size of the icons */
-    display: flex;
-    align-items: center; /* Centers the icon vertically */
-    justify-content: center; /* Centers the icon horizontally */
-    border-radius: 50%; /* Keeps the circular shape */
-    overflow: hidden; /* Ensures the SVG fits within the circle */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--selective-yellow);
+  box-shadow: 0 0 0 3px rgba(255, 185, 21, 0.2);
 }
 
-.info-icon img {
-    width: 80%; /* Adjust the size of the SVG inside the circle */
-    height: 80%; /* Maintain aspect ratio */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #9CA3AF;
 }
 
-/* Base button style */
-.contact-form button[type="submit"] {
-    font-size: 1.1rem;
-    padding: 1rem 2rem;
-    background-color: #ff9500;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
 }
 
-/* Privacy Policy section */
-.privacy-policy ul {
-    padding-left: 40px; /* Adjust this value to control the indentation */
+.form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+  cursor: pointer;
 }
 
-.privacy-policy ul li {
-    margin-bottom: 10px; /* Optional: Add spacing between list items */
+.form-submit-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 15px;
 }
 
-/* Terms of Service section */
-.terms-of-service ul {
-    padding-left: 40px; /* Adjust this value to control the indentation */
+/* Form success message */
+.form-success {
+  display: none;
+  background: #F0FFF4;
+  border: 1.5px solid #48BB78;
+  border-radius: var(--border-radius);
+  padding: 24px;
+  text-align: center;
 }
 
-.terms-of-service ul li {
-    margin-bottom: 10px; /* Optional: Add spacing between list items */
+.form-success.visible {
+  display: block;
 }
 
-/* Benefit item styling for Who We Help section */
-.benefit-item {
-    position: relative;
-    padding: 4px 0;  /* Reduced from 8px to 4px */
+.form-success-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
 }
 
-.benefit-item:not(:last-child)::after {
-    content: "•";
-    display: block;
-    text-align: center;
-    color: #3498db;
-    font-size: 12px;  /* Reduced from 14px to 12px */
-    margin: 4px auto 0;  /* Reduced from 8px to 4px */
+.form-success h4 {
+  color: #2F855A;
+  margin-bottom: 8px;
 }
 
-/* Footer */
-footer {
-    background-color: #001a33;
-    color: white;
-    padding: 3rem 0 1rem;
+.form-success p {
+  font-size: 0.9rem;
+  color: #276749;
 }
 
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer {
+  background: var(--oxford-blue);
+  color: rgba(255,255,255,0.8);
+  padding: 64px 0 0;
 }
 
 .footer-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 3rem;
-    margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 48px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.footer-brand .site-logo {
+  margin-bottom: 20px;
+}
+
+.footer-brand p {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  max-width: 280px;
 }
 
 .footer-col h4 {
-    margin-bottom: 1.5rem;
-    color: #ff9500;
-    font-size: 1.2rem;
+  color: var(--mustard);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
 }
 
-.footer-col ul {
-    list-style: none;
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.footer-col ul li {
-    margin-bottom: 0.8rem;
+.footer-links a {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.9rem;
+  transition: color var(--transition);
 }
 
-.footer-col ul li a {
-    color: #ccc;
-    text-decoration: none;
-    transition: color 0.3s;
+.footer-links a:hover {
+  color: var(--mustard);
 }
 
-.footer-col ul li a:hover {
-    color: white;
+.footer-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.social-links {
-    display: flex;
-    gap: 1rem;
+.footer-contact-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
 }
 
-.social-links a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background-color: rgba(255, 255, 255, 255, 0.1);
-    border-radius: 50%;
-    color: white;
-    text-decoration: none;
-    transition: background-color 0.3s;
+.footer-contact-item .fci-icon {
+  color: var(--selective-yellow);
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 
-.social-links a:hover {
-    background-color: #ff9500;
+.footer-contact-item a {
+  color: rgba(255,255,255,0.7);
+}
+
+.footer-contact-item a:hover {
+  color: var(--mustard);
 }
 
 .footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-copyright {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+}
+
+.footer-legal {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-legal a {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+  transition: color var(--transition);
+}
+
+.footer-legal a:hover {
+  color: var(--mustard);
+}
+
+/* ============================================================
+   FAMILIES PAGE SPECIFIC
+   ============================================================ */
+.families-hero {
+  background: linear-gradient(135deg, var(--prussian-blue) 0%, var(--oxford-blue) 100%);
+  padding: 100px 0 80px;
+  text-align: center;
+}
+
+.families-hero h1 {
+  color: var(--white);
+  margin: 20px auto 24px;
+  max-width: 700px;
+}
+
+.families-hero h1 span {
+  color: var(--mustard);
+}
+
+.families-hero .lead {
+  color: rgba(255,255,255,0.82);
+  max-width: 580px;
+  margin: 0 auto 40px;
+}
+
+/* What to Expect section */
+.what-to-expect {
+  background: var(--white);
+}
+
+.expect-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+}
+
+.expect-card {
+  background: var(--yellow-tint);
+  border: 1px solid rgba(255,185,21,0.25);
+  border-radius: var(--border-radius-lg);
+  padding: 32px;
+  transition: all var(--transition);
+}
+
+.expect-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--selective-yellow);
+}
+
+.expect-card-icon {
+  width: 56px;
+  height: 56px;
+  background: var(--selective-yellow);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.expect-card h3 {
+  margin-bottom: 12px;
+}
+
+/* Reassurance section */
+.reassurance {
+  background: linear-gradient(135deg, var(--mustard) 0%, var(--selective-yellow) 100%);
+}
+
+.reassurance h2 {
+  color: var(--oxford-blue);
+}
+
+.reassurance .section-header p {
+  color: rgba(1,27,47,0.75);
+}
+
+.reassurance-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.reassurance-card {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 28px 24px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+
+.reassurance-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.reassurance-card .card-num {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--selective-yellow);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.reassurance-card h4 {
+  margin-bottom: 8px;
+}
+
+.reassurance-card p {
+  font-size: 0.9rem;
+}
+
+/* Family notification section */
+.notifications-explainer {
+  background: var(--light-gray);
+}
+
+.notifications-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.notifications-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.notif-step {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.notif-step-num {
+  width: 44px;
+  height: 44px;
+  background: var(--prussian-blue);
+  color: var(--white);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.notif-step-content h4 {
+  margin-bottom: 6px;
+}
+
+.notif-step-content p {
+  font-size: 0.9rem;
+}
+
+/* Family testimonials */
+.family-testimonials {
+  background: var(--yellow-tint);
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.testimonial-card {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+  border-left: 4px solid var(--selective-yellow);
+}
+
+.testimonial-quote {
+  font-size: 0.95rem;
+  color: var(--dark-text);
+  line-height: 1.7;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.testimonial-quote::before {
+  content: '"';
+  font-size: 3rem;
+  color: var(--mustard);
+  line-height: 0.8;
+  display: block;
+  margin-bottom: 8px;
+  font-family: Georgia, serif;
+}
+
+.testimonial-author {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--oxford-blue);
+}
+
+.testimonial-role {
+  font-size: 0.8rem;
+  color: var(--medium-gray);
+  margin-top: 2px;
+}
+
+/* Family contact form section */
+.family-contact {
+  background: var(--white);
+}
+
+.family-contact-inner {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.family-contact-wrap {
+  background: var(--prussian-blue);
+  border-radius: var(--border-radius-lg);
+  padding: 48px;
+}
+
+.family-contact-wrap h3 {
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.family-contact-wrap > p {
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 32px;
+}
+
+.family-contact-wrap .form-group label {
+  color: rgba(255,255,255,0.9);
+}
+
+.family-contact-wrap .form-group input,
+.family-contact-wrap .form-group select,
+.family-contact-wrap .form-group textarea {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.2);
+  color: var(--white);
+}
+
+.family-contact-wrap .form-group input::placeholder,
+.family-contact-wrap .form-group textarea::placeholder {
+  color: rgba(255,255,255,0.4);
+}
+
+.family-contact-wrap .form-group input:focus,
+.family-contact-wrap .form-group select:focus,
+.family-contact-wrap .form-group textarea:focus {
+  border-color: var(--mustard);
+  box-shadow: 0 0 0 3px rgba(255, 211, 88, 0.2);
+}
+
+.family-contact-wrap .form-group select option {
+  background: var(--prussian-blue);
+  color: var(--white);
+}
+
+/* ============================================================
+   LEGAL PAGES (Privacy Policy, Terms)
+   ============================================================ */
+.legal-hero {
+  background: linear-gradient(135deg, var(--prussian-blue), var(--oxford-blue));
+  padding: 80px 0;
+  text-align: center;
+}
+
+.legal-hero h1 {
+  color: var(--white);
+  margin-bottom: 16px;
+}
+
+.legal-hero p {
+  color: rgba(255,255,255,0.75);
+}
+
+.legal-content {
+  background: var(--white);
+  padding: 64px 0;
+}
+
+.legal-content .container {
+  max-width: 800px;
+}
+
+.legal-content h2 {
+  font-size: 1.3rem;
+  margin: 36px 0 12px;
+  color: var(--oxford-blue);
+}
+
+.legal-content h2:first-child {
+  margin-top: 0;
+}
+
+.legal-content p {
+  margin-bottom: 16px;
+  color: var(--dark-text);
+}
+
+.legal-content ul {
+  list-style: disc;
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+.legal-content ul li {
+  margin-bottom: 8px;
+  color: var(--dark-text);
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+.text-center { text-align: center; }
+.text-left   { text-align: left; }
+.mb-0 { margin-bottom: 0; }
+.mt-0 { margin-top: 0; }
+.d-flex { display: flex; }
+.align-center { align-items: center; }
+.gap-16 { gap: 16px; }
+
+/* Decorative divider */
+.divider {
+  width: 60px;
+  height: 4px;
+  background: var(--selective-yellow);
+  border-radius: 2px;
+  margin: 16px auto 0;
+}
+
+.divider-left {
+  margin: 16px 0 0;
+}
+
+/* Skip to main for accessibility */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  background: var(--prussian-blue);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: 0 0 8px 0;
+  font-weight: 600;
+  z-index: 9999;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* ============================================================
+   RESPONSIVE — TABLET (max 1024px)
+   ============================================================ */
+@media (max-width: 1024px) {
+  .hero-content {
+    grid-template-columns: 1fr;
     text-align: center;
-    color: #ccc;
-    font-size: 0.9rem;
+    padding: 60px 0;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .hero-stats {
+    max-width: 480px;
+    margin: 40px auto 0;
+  }
+
+  .hero-image {
+    display: none;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .about-image-wrap {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .about-image-badge {
+    right: -8px;
+    bottom: -8px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .services-grid .service-card:last-child {
+    grid-column: 1 / -1;
+    max-width: 420px;
+    margin: 0 auto;
+  }
 }
 
-/* Responsive styles */
-@media (max-width: 992px) {
-    .about-flex {
-        flex-direction: column;
-    }
-    .contact-flex {
-        flex-direction: column;
-    }
-}
-
-/* Mobile Who We Help improvements */
+/* ============================================================
+   RESPONSIVE — MOBILE (max 768px)
+   ============================================================ */
 @media (max-width: 768px) {
-    /* Better card styling */
-    .who-we-help .help-item {
-        min-width: 100%;
-        padding: 1.5rem;
-        margin-right: 0;
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        border-top: 5px solid #0062cc;
-    }
-    
-    /* Improve vertical spacing */
-    .who-we-help .help-content {
-        margin-bottom: 1rem;
-    }
-    
-    /* Make heading stand out more */
-    .who-we-help .help-content h3 {
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
-        color: #0062cc;
-    }
-    
-    /* Better benefit item spacing and readability */
-    .who-we-help .benefit-item {
-        padding: 6px 0;
-        margin: 0;
-        font-size: 0.95rem;
-        line-height: 1.4;
-    }
-    
-    /* Smaller, more subtle dividers */
-    .who-we-help .benefit-item:not(:last-child)::after {
-        font-size: 10px;
-        opacity: 0.6;
-    }
-    
-    /* Adjust client image circle size */
-    .who-we-help .client-image {
-        width: 60px;
-        height: 60px;
-        margin-top: 0.75rem;
-    }
-    
-    /* Remove swipe indicator in favor of dots */
-    .who-we-help .who-we-help-container::before {
-        display: none;
-    }
-    
-    /* Fix container padding */
-    .who-we-help .who-we-help-container {
-        padding: 0;
-        margin: 0 auto;
-        max-width: 90%;
-    }
-    
-    /* Smaller slider control container with better alignment */
-    .who-we-help .slider-controls {
-        width: auto;
-        max-width: 80%;
-        padding: 0.35rem 0.75rem;
-        margin-top: 1.5rem;
-    }
+  :root {
+    --header-height: 64px;
+  }
+
+  .section {
+    padding: 56px 0;
+  }
+
+  .section-header {
+    margin-bottom: 40px;
+  }
+
+  /* Nav */
+  .nav-links,
+  .nav-cta {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  /* Hero */
+  .hero-stats {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+
+  /* Services */
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .services-grid .service-card:last-child {
+    max-width: 100%;
+    grid-column: auto;
+  }
+
+  /* Technology — switch to accordion */
+  .tech-tabs,
+  .tech-panels {
+    display: none;
+  }
+
+  .tech-accordion {
+    display: block;
+  }
+
+  /* Who We Help */
+  .who-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Contact */
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-form-wrap {
+    padding: 28px 20px;
+  }
+
+  /* About */
+  .about-grid {
+    gap: 60px;
+  }
+
+  .counties-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Footer */
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .footer-brand {
+    grid-column: auto;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  /* Families page */
+  .expect-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reassurance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .notifications-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .family-contact-wrap {
+    padding: 28px 20px;
+  }
+
+  /* Tab buttons on mobile — allow scroll */
+  .tech-tabs {
+    display: flex;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
-/* Mobile Who We Help width fixes */
-@media (max-width: 768px) {
-    /* Fix container width and remove horizontal overflow */
-    .who-we-help .who-we-help-container {
-        width: 100%;
-        max-width: 100%;
-        padding: 0;
-        margin: 0 auto;
-        overflow-x: hidden !important;
-    }
-    
-    /* Fix slider width and positioning */
-    .who-we-help .who-we-help-slider {
-        width: 100%;
-        position: relative;
-        left: 0;
-    }
-    
-    /* Ensure each slide stays within bounds */
-    .who-we-help .help-item {
-        width: 100%;
-        min-width: 100%;
-        padding: 1rem;
-        margin: 0;
-        box-sizing: border-box;
-    }
-    
-    /* Add padding to the section container */
-    .who-we-help .container {
-        width: 100%;
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-    
-    /* Ensure content inside items doesn't overflow */
-    .who-we-help .help-content {
-        width: 100%;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-    }
-    
-    /* Fix any nested elements that might cause horizontal overflow */
-    .who-we-help .client {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    /* Scale images down if needed */
-    .who-we-help img {
-        max-width: 100%;
-        height: auto;
-    }
+/* ============================================================
+   RESPONSIVE — SMALL MOBILE (max 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 16px;
+  }
 
-    .who-we-help .help-item.active {
-        opacity: 0.85 !important; /* Show only active slide */
-    }
+  .hero-actions {
+    flex-direction: column;
+  }
 
-    .who-we-help .client-image {
-        display: none; /* Hide client image on mobile for better spacing */
-    }
-
-    .who-we-help .benefit-item:not(:last-child)::after {
-        font-size: 2px;
-        opacity: 0.6;
-    }
+  .btn-lg {
+    padding: 16px 28px;
+  }
 }
 
-/* Fix horizontal overflow issues for mobile view */
-html {
-    overflow-x: hidden;
-    width: 100%;
-    position: relative;
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-in {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Intersection observer triggers */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
