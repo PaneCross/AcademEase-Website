@@ -322,8 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function isValidPhone(phone) {
-    // Accept digits, spaces, dashes, parens, plus
-    return /^[\d\s\-\+\(\)\.]{7,20}$/.test(phone);
+    return phone.replace(/\D/g, '').length === 10;
   }
 
   function showFormSuccess(form) {
@@ -360,12 +359,40 @@ document.addEventListener('DOMContentLoaded', () => {
   document.head.appendChild(errorStyle);
 
   /* ============================================================
-     11. PHONE NUMBER FORMATTING (optional, non-blocking)
+     11. PHONE NUMBER FORMATTING — US (xxx) xxx-xxxx, 10 digits max
      ============================================================ */
   document.querySelectorAll('input[type="tel"]').forEach(input => {
     input.addEventListener('input', (e) => {
-      // Allow only digits, spaces, dashes, parens, plus
-      e.target.value = e.target.value.replace(/[^0-9\s\-\+\(\)\.]/g, '');
+      const cursorPos = e.target.selectionStart;
+      const oldVal = e.target.value;
+
+      // Strip non-digits, cap at 10
+      const digits = oldVal.replace(/\D/g, '').slice(0, 10);
+
+      // Build formatted string
+      let formatted = '';
+      if (digits.length === 0) {
+        formatted = '';
+      } else if (digits.length <= 3) {
+        formatted = `(${digits}`;
+      } else if (digits.length <= 6) {
+        formatted = `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+      } else {
+        formatted = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+      }
+
+      e.target.value = formatted;
+
+      // Restore cursor: count digits before old cursor, place after same count in new string
+      const digitsBeforeCursor = oldVal.slice(0, cursorPos).replace(/\D/g, '').length;
+      let newCursor = 0;
+      let counted = 0;
+      for (let i = 0; i < formatted.length; i++) {
+        if (/\d/.test(formatted[i])) counted++;
+        if (counted === digitsBeforeCursor) { newCursor = i + 1; break; }
+      }
+      if (digitsBeforeCursor === 0) newCursor = formatted.length === 0 ? 0 : 1;
+      e.target.setSelectionRange(newCursor, newCursor);
     });
   });
 
