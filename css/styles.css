@@ -272,6 +272,31 @@ p {
   line-height: 1;
 }
 
+/* --- Header Wave Animation --- */
+.header-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.header-wave-svg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 24px;
+  animation: headerWaveFlow 16s linear infinite;
+}
+
+@keyframes headerWaveFlow {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
 .site-nav {
   display: flex;
   align-items: center;
