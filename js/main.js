@@ -177,10 +177,13 @@ document.addEventListener('DOMContentLoaded', () => {
      ============================================================ */
   const accordionHeaders = document.querySelectorAll('.tech-accordion-header');
 
-  accordionHeaders.forEach(header => {
-    header.addEventListener('click', () => {
-      const isOpen = header.classList.contains('open');
-      const body   = header.nextElementSibling;
+  // Flag: suppress auto-scroll during the initial default-open click
+  let accordionScrollEnabled = false;
+
+  accordionHeaders.forEach(accordionHeader => {
+    accordionHeader.addEventListener('click', () => {
+      const isOpen = accordionHeader.classList.contains('open');
+      const body   = accordionHeader.nextElementSibling;
 
       // Close all
       accordionHeaders.forEach(h => {
@@ -192,18 +195,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Toggle clicked (open if was closed)
       if (!isOpen) {
-        header.classList.add('open');
-        header.setAttribute('aria-expanded', 'true');
+        accordionHeader.classList.add('open');
+        accordionHeader.setAttribute('aria-expanded', 'true');
         if (body) body.classList.add('open');
+
+        // Auto-scroll: place the expanded header just below the sticky nav
+        if (accordionScrollEnabled) {
+          requestAnimationFrame(() => {
+            const siteHeaderH = header ? header.offsetHeight : 72;
+            const targetTop = accordionHeader.getBoundingClientRect().top
+              + window.scrollY - siteHeaderH - 8;
+            window.scrollTo({ top: targetTop, behavior: 'smooth' });
+          });
+        }
       }
     });
   });
 
-  // Open first accordion item by default
+  // Open first accordion item by default (no scroll on init)
   const firstAccordion = document.querySelector('.tech-accordion-header');
   if (firstAccordion) {
     firstAccordion.click();
   }
+  accordionScrollEnabled = true; // enable scroll for all subsequent user clicks
 
   /* ============================================================
      6. SCROLL REVEAL ANIMATIONS
@@ -237,9 +251,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = document.querySelector(href);
       if (target) {
         e.preventDefault();
-        const headerH = parseInt(getComputedStyle(document.documentElement)
-          .getPropertyValue('--header-height')) || 72;
-        const top = target.getBoundingClientRect().top + window.scrollY - headerH - 12;
+        const headerH = header ? header.offsetHeight : 72;
+        const top = target.getBoundingClientRect().top + window.scrollY - headerH - 20;
         window.scrollTo({ top, behavior: 'smooth' });
         closeMobileMenu();
       }
