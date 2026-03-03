@@ -94,36 +94,82 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ============================================================
-     4. TECHNOLOGY SECTION — TABBED DISPLAY (desktop)
+     4. TECHNOLOGY SECTION — TABBED DISPLAY (desktop) + AUTOPLAY
      ============================================================ */
-  const techTabBtns = document.querySelectorAll('.tech-tab-btn');
-  const techPanels  = document.querySelectorAll('.tech-panel');
+  const techTabBtns  = document.querySelectorAll('.tech-tab-btn');
+  const techPanels   = document.querySelectorAll('.tech-panel');
+  const techPanelWrap = document.querySelector('.tech-panels');
+  const techSection  = document.querySelector('#technology');
+
+  let techCurrentIdx  = 0;
+  let techAutoTimer   = null;
+  const TECH_INTERVAL = 10000; // 10 seconds
+
+  // Core: instantly switch to a tab by name
+  function setActiveTab(tabName) {
+    techTabBtns.forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    techPanels.forEach(p => {
+      p.classList.remove('active');
+      p.setAttribute('aria-hidden', 'true');
+    });
+    const btn = document.querySelector(`.tech-tab-btn[data-tab="${tabName}"]`);
+    if (btn) {
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      techCurrentIdx = [...techTabBtns].indexOf(btn);
+    }
+    const panel = document.querySelector(`.tech-panel[data-panel="${tabName}"]`);
+    if (panel) {
+      panel.classList.add('active');
+      panel.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  // Animated: fade out → switch → fade in (used by autoplay)
+  function switchTabWithFade(tabName) {
+    if (!techPanelWrap) { setActiveTab(tabName); return; }
+    techPanelWrap.style.transition = 'opacity 0.35s ease';
+    techPanelWrap.style.opacity = '0';
+    setTimeout(() => {
+      setActiveTab(tabName);
+      techPanelWrap.style.opacity = '1';
+    }, 350);
+  }
+
+  function startTechAutoplay() {
+    if (techAutoTimer) return;
+    techAutoTimer = setInterval(() => {
+      const nextIdx = (techCurrentIdx + 1) % techTabBtns.length;
+      switchTabWithFade(techTabBtns[nextIdx].dataset.tab);
+    }, TECH_INTERVAL);
+  }
+
+  function stopTechAutoplay() {
+    clearInterval(techAutoTimer);
+    techAutoTimer = null;
+  }
 
   if (techTabBtns.length && techPanels.length) {
-    techTabBtns.forEach(btn => {
+    // Manual click — instant switch, reset autoplay timer
+    techTabBtns.forEach((btn, idx) => {
       btn.addEventListener('click', () => {
-        const target = btn.dataset.tab;
-
-        // Update buttons
-        techTabBtns.forEach(b => {
-          b.classList.remove('active');
-          b.setAttribute('aria-selected', 'false');
-        });
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-
-        // Update panels
-        techPanels.forEach(panel => {
-          panel.classList.remove('active');
-          panel.setAttribute('aria-hidden', 'true');
-        });
-        const activePanel = document.querySelector(`.tech-panel[data-panel="${target}"]`);
-        if (activePanel) {
-          activePanel.classList.add('active');
-          activePanel.setAttribute('aria-hidden', 'false');
-        }
+        setActiveTab(btn.dataset.tab);
+        stopTechAutoplay();
+        startTechAutoplay();
       });
     });
+
+    // Pause autoplay while hovering the technology section
+    if (techSection) {
+      techSection.addEventListener('mouseenter', stopTechAutoplay);
+      techSection.addEventListener('mouseleave', startTechAutoplay);
+    }
+
+    // Kick off autoplay
+    startTechAutoplay();
   }
 
   /* ============================================================
