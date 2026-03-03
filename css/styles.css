@@ -951,12 +951,15 @@ p {
 }
 
 .tech-accordion-body {
-  display: none;
-  padding: 0 24px 24px;
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 24px;
+  transition: max-height 0.4s ease, padding-bottom 0.35s ease;
 }
 
 .tech-accordion-body.open {
-  display: block;
+  max-height: 600px;
+  padding-bottom: 24px;
 }
 
 .tech-accordion-body p {
@@ -1506,6 +1509,10 @@ p {
 
 .notif-step-content p {
   font-size: 0.9rem;
+}
+
+.notifications-explainer .lead {
+  margin-bottom: 32px;
 }
 
 /* Family testimonials */
