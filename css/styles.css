@@ -1327,7 +1327,7 @@ p {
    ============================================================ */
 .families-hero {
   background: linear-gradient(135deg, var(--prussian-blue) 0%, var(--oxford-blue) 100%);
-  padding: 100px 0 80px;
+  padding: calc(var(--header-height) + 48px) 0 80px;
   text-align: center;
 }
 
