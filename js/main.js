@@ -199,14 +199,15 @@ document.addEventListener('DOMContentLoaded', () => {
         accordionHeader.setAttribute('aria-expanded', 'true');
         if (body) body.classList.add('open');
 
-        // Auto-scroll: place the expanded header just below the sticky nav
+        // Auto-scroll: wait for any closing transition (0.4s) to finish
+        // so the collapsing body doesn't skew the position calculation
         if (accordionScrollEnabled) {
-          requestAnimationFrame(() => {
+          setTimeout(() => {
             const siteHeaderH = header ? header.offsetHeight : 72;
             const targetTop = accordionHeader.getBoundingClientRect().top
               + window.scrollY - siteHeaderH - 8;
             window.scrollTo({ top: targetTop, behavior: 'smooth' });
-          });
+          }, 420);
         }
       }
     });
